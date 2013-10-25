@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	 	<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>									
+		<script src="../../../lib/melonJS-0.9.9-min.js"></script>
+		<script src="data.js"></script>
+		<script src="../source/dialog.js"></script>
+		<script>
+		window.onload = function() {			
+			window.me = window.me || {};						
+			var dialog = null;
+			
+			module( "module A", {				  
+				  setup: function() {				    
+				   	dialog = new me.Dialog();
+				  },
+				  
+				  teardown: function() {				   
+				    dialog = null;
+				  }
+			});
+																			 				
+		  	test("_getRoots", function() { 								        				                                                    
+            	equal( dialog._getRoots( DATA ), 1);
+                       
+            	var twoParents = DATA;
+            	twoParents.dialogues[4].parent = null;                                                                        
+            	equal( dialog._getRoots( DATA ), 2);
+                                                        	            
+            	equal( dialog._getRoots( {dialogues:[]} ), 0);                        	                                                      
+	        });
+	        
+	        test("_isValid", function() { 								        				                                                    
+            	ok( !dialog._isValid());
+                ok( !dialog._isValid( {} ));
+                ok( !dialog._isValid( {dialogues:[]} ));
+                ok( dialog._isValid( DATA ));                        	                                                      
+            }); 
+            
+            test("getRoot", function() { 								        				                                                    
+            	dialog.setData( DATA );           		      
+            	equal( dialog.getRoot(), DATA.dialogues[0] );                                   	                                                     
+            });
+            
+            test("getActor", function() {                                                                                              
+            	dialog.setData( DATA );                    
+                equal( dialog.getActor(10).id, 10);
+                equal( dialog.getActor(999), null);
+                equal( dialog.getActor(), null);                                                
+            }); 
+            
+            test("find", function() {                                                                                              
+            	dialog.setData( DATA );                                   
+              	
+              	equal( dialog.find(10).id, 10 );
+              	equal( dialog.find(41).id, 41 );
+                                
+                equal( dialog.find(999), null);
+                equal( dialog.find(), null );                                                
+            }); 
+            
+             test("_execCode", function() {                                                                                           
+                    dialog._sentence = {}; 
+                    dialog._execCode("this._sentence.a=10; this._sentence.b='testa'");
+                    
+                    equal( dialog._sentence.a, 10 );
+                    equal( dialog._sentence.b, "testa" );
+                                                                                                                                  
+                    throws(
+                        function() {
+                        	dialog.execCode("this.a=='999;");
+                        },
+                        "Parse error."
+                    );                                                           
+            });
+            
+            test("_isActive", function() {                                  
+                    var sentence = {a:10, b:'testa'};        
+                    dialog._sentence = sentence;
+            
+                    sentence.conditionsString="this._sentence.a==10";
+                    ok( dialog._isActive( sentence ));
+                    
+                    sentence.conditionsString="this._sentence.b=='testa'";                  
+                    ok( dialog._isActive( sentence ));
+                    
+                    sentence.conditionsString="";
+                    ok( dialog._isActive( sentence ));
+                    
+                    sentence.conditionsString="this.a==999";
+                    ok( !dialog._isActive( sentence ));
+                    
+                    sentence.conditionsString="this.c==10";
+                    ok( !dialog._isActive( sentence ));                                       
+            });
+            
+            test("set", function() {                         
+                    dialog.setData( DATA ); 
+                    
+                    dialog.set(10);
+                    equal( dialog._sentence.id, 10);
+                                        
+                    dialog._data.dialogues[0].conditionsString = "false";
+                    dialog.set(10);
+                    equal( dialog._sentence.id, 20);
+                    dialog._data.dialogues[0].conditionsString = "";
+                    
+                    dialog.set(41);
+                    equal( dialog._sentence.id, 41);
+                                                                                        
+                    dialog.set();
+                    equal( dialog._sentence, null);
+                    
+                    dialog.set( 999 );
+                    equal( dialog._sentence, null);                                                
+            });
+            
+            test("get", function() {        
+                    dialog.setData( DATA ); 
+                                                    
+                    deepEqual( dialog.get(), dialog.getRoot());
+                    
+                    dialog._sentence = DATA.dialogues[4];
+                    deepEqual( dialog.get(), DATA.dialogues[4] );                                                                        
+            });
+            
+            test("getDOMContainer", function() {        
+                    var container = dialog.getDOMContainer();                   
+                    equal( container.getAttribute("id"), me.Dialog.DOM_CONTAINER_ID);                                                                                                                                                                 
+            });
+            
+            test("_createSentence", function() {        
+                    var container = dialog._createSentence( DATA.dialogues[0] );                                                                                       
+                    equal( container.nodeName.toLowerCase(), me.Dialog.SENTENCE_ELEMENT);                    
+                    equal( container.getAttribute("data-sentence-id"), "10"); 
+                    equal( container.innerHTML, "Where is the cave?");                                                                                                                                                                
+            });
+            
+            test("_getSentenceAsDOM", function() { 
+             		dialog.setData( DATA );        
+                    var container = dialog._getSentenceAsDOM( DATA.dialogues[0] );                                    
+                    equal( container.getAttribute("class"), "Ogre");                                                                                                                                                                                 
+            });
+            
+            test("_getChoiceAsDOM", function() { 
+             		dialog.setData( DATA );        
+                    var container = dialog._getChoiceAsDOM( DATA.dialogues[2] ); 
+                    equal( container.getAttribute("class"), "choice");                     
+                    equal( container.childNodes.length, 2);                                                                                                                                                                                 
+            });
+               
+                        		  																																									
+		}; // onload
+		</script>				
+	</head>
+	<body>
+		<h1 id="qunit-header">MelonJS: dialog plugin</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture">test markup, will be hidden</div>		
+	</body>
+</html>
