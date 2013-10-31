@@ -4,6 +4,9 @@ This plugin for [MelonJS engine](http://melonjs.org/) controls interactive conve
 **MelonJS Version**
 0.9.9
 
+**Status**
+under construction
+
 ### Online demo
 - TODO
 
@@ -20,7 +23,7 @@ This plugin for [MelonJS engine](http://melonjs.org/) controls interactive conve
 TODO
 
 ### Plugin source
-- [plugin](#)
+- [plugin](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js)
 
 ###Advantage:
 - no depending on the third party library

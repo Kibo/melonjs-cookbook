@@ -8,18 +8,17 @@ game.MouseControlledEntity = me.ObjectEntity.extend({
     	this._target = {};        	   	  	    	   	  
     	this._target.x = e.gameWorldX - Math.floor( this.width / 2 );    	
     	this._target.y = e.gameWorldY - Math.floor( this.height / 2 );    
-    	this._setDirection();    
+    	this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);    
     	this.renderable.setCurrentAnimation( this.direction );     	    		    	  
     },
     
     /**
      * set direction 
  	 * @private
+ 	 * @param {number} dx
+ 	 * @param {number} dy
      */
-    _setDirection:function(){           	
-    	var dx = this._target.x - this.pos.x;
-    	var dy = this._target.y - this.pos.y;
-    	
+    _setDirection:function( dx, dy ){           	    	    
     	if( Math.abs( dx ) > Math.abs( dy ) ){    		
     		this.direction = ( dx > 0) ? "right" : "left";
     		     		    	   
@@ -64,7 +63,7 @@ game.HeroEntity = game.MouseControlledEntity.extend({
         this.parent(x, y, settings);
  
         // set the default horizontal & vertical speed (accel vector)
-        this.setVelocity( 2, 2);
+        this.setVelocity( 3, 3);
               
         this.gravity = 0;
         this.setFriction(0.5, 0.5);

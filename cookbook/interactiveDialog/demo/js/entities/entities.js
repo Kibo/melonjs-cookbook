@@ -1,12 +1,12 @@
-game.BaseEntity = me.ObjectEntity.extend({	
+game.BaseEntity = me.ObjectEntity.extend({
+		
 	/**
      * Set direction 
  	 * @private
+ 	 * @param {number} dx
+ 	 * @param {number} dy
      */
-    _setDirection:function(){           	
-    	var dx = this._target.x - this.pos.x;
-    	var dy = this._target.y - this.pos.y;
-    	
+    _setDirection:function( dx, dy ){    	    	          	    	  
     	if( Math.abs( dx ) > Math.abs( dy ) ){    		
     		this.direction = ( dx > 0) ? "right" : "left";
     		     		    	   
@@ -30,13 +30,26 @@ game.BaseEntity = me.ObjectEntity.extend({
         	&& Math.abs(dy) < this.maxVel.x){        		
         		delete this._target;
         		return;        		        		     
-        	} 
-    		
+        	}
+        	        	    	
     		var angle = Math.atan2(dy, dx);
         	this.vel.x = Math.cos(angle) * this.accel.x * me.timer.tick;
-        	this.vel.y = Math.sin(angle) * this.accel.y * me.timer.tick;         	        	               	           	     
-    	}    	
-    },       
+        	this.vel.y = Math.sin(angle) * this.accel.y * me.timer.tick;        	        	        	        	               	           	   
+    	}else{
+    		this.vel.x = 0;
+    		this.vel.y = 0;
+    	}   	
+    }, 
+    
+     /**
+	 * default on collision handler	
+	 */ 
+    onCollision : function (res, obj){  
+    	console.log("collision");  	    	
+    	delete this._target;    	  
+    	this._setDirection( -res.x, -res.y );
+    	this.renderable.setCurrentAnimation( this.direction );    	  		 
+    },         
 });
 
 game.HeroEntity = game.BaseEntity.extend({
@@ -51,7 +64,7 @@ game.HeroEntity = game.BaseEntity.extend({
         this.parent(x, y, settings);
  
         // set the default horizontal & vertical speed (accel vector)
-        this.setVelocity( 2, 2);
+        this.setVelocity( 3, 3);
               
         this.gravity = 0;
         this.setFriction(0.5, 0.5);
@@ -69,28 +82,35 @@ game.HeroEntity = game.BaseEntity.extend({
         this.direction = "down"; 
         
 		//has to bee release
-        me.input.registerPointerEvent('mousedown', me.game.viewport, this.onMouseDown.bind(this));                         
+        me.input.registerPointerEvent('mousedown', me.game.viewport, this.onMouseDown.bind(this));                	                	      			                                  
     },
    
-    update: function() {
-    	
+    update: function() {     	    	   	    
     	this._calculateStep();
     	        	    	    	    	    	    	    	                                                                                                          
         // check & update player movement
         this.updateMovement();
-        
-         // update animation if necessary
-        if (this.vel.x!=0 || this.vel.y!=0) {        	        
+                                   
+        // check for collision
+        var res =  me.game.world.collide(this);    	
+    	if (res) {        		    		  		    		  		    	  
+    		delete this._target;    		
+    		this.pos.x -= res.x;
+    		this.pos.y -= res.y;    		    		    		    		   		    		      		    		    		    			    		    				    		  
+    	}
+    	    	    	    	        	    	                   	         
+        // update animation if necessary
+        if (this.vel.x!=0 || this.vel.y!=0) {        	        	        	        	     
             // update object animation
             this.parent();
             return true;
         }
-                        
+                                       	    	                     
         // else inform the engine we did not perform
         // any update (e.g. position, animation)
         return false;
     }, 
-    
+          
     /**
 	 * Mouse down handler
 	 * @param {Event} e - MelonJS Event Object 
@@ -98,8 +118,8 @@ game.HeroEntity = game.BaseEntity.extend({
     onMouseDown: function(e){
     	this._target = {};        	   	  	    	   	  
     	this._target.x = e.gameWorldX - Math.floor( this.width / 2 );    	
-    	this._target.y = e.gameWorldY - Math.floor( this.height / 2 );    
-    	this._setDirection();    
+    	this._target.y = e.gameWorldY - Math.floor( this.height / 2 );        	  
+    	this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);    
     	this.renderable.setCurrentAnimation( this.direction );        	    	  		    	
     }, 
     
@@ -125,7 +145,8 @@ game.GirlEntity = game.BaseEntity.extend({
         this.gravity = 0;
         this.setFriction(0.5, 0.5);
                        
-        this.collidable = false;
+        this.collidable = true;        
+        this.type = me.game.ENEMY_OBJECT;
                             
         this.renderable.addAnimation("down", [0,1,2]);
         this.renderable.addAnimation("left", [3,4,5]);
@@ -136,12 +157,14 @@ game.GirlEntity = game.BaseEntity.extend({
         this.minY = y;
         this.maxX = x + settings.width - settings.spritewidth;
         this.maxY = y + settings.height - settings.spriteheight;
-                                                                                                                                    
+        
+        /*                                                                                                                                   
 		this.walkInterval = setInterval(function(){
 			this._setTargetPosition( 
         		Number(0).random(this.minX, this.maxX), 
         		Number(0).random(this.minY, this.maxY));        		
-		}.bind(this), 5000);        	        	               
+		}.bind(this), 5000);
+		*/		  							    	        	          
 	},
 	
     update: function() {    	        
@@ -151,7 +174,7 @@ game.GirlEntity = game.BaseEntity.extend({
         this._calculateStep();
     	           
         this.updateMovement();
-           
+                  	                    
         // update animation if necessary
         if (this.vel.x!=0 || this.vel.y!=0) {
             // update object animation
@@ -161,7 +184,7 @@ game.GirlEntity = game.BaseEntity.extend({
         
         return false;
     },
-            
+                       
     /**
     * set a target position
     * @private
@@ -172,7 +195,7 @@ game.GirlEntity = game.BaseEntity.extend({
     	this._target = {};        	   	  	    	   	  
     	this._target.x = x;    	
     	this._target.y = y;    
-    	this._setDirection();    
+    	this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);      
     	this.renderable.setCurrentAnimation( this.direction );    
     },	
     
@@ -183,5 +206,3 @@ game.GirlEntity = game.BaseEntity.extend({
 		clearInterval( this.walkInterval );	
     }, 
 });
-
-
