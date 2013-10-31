@@ -1,7 +1,7 @@
 /**
  * A dialog manager
  * 
- * This plugin for MelonJS engine controls interactive conversation between a characters in the game.
+ * This plugin for MelonJS engine controls interactive conversation between a characters in a game.
  * usage : me.plugin.register(dialog, "dialog");
  * 
  * For building data structure of your conversation you can use the Dialogues builder tool. 

@@ -1,12 +1,9 @@
 # Interactive dialog
-This plugin for [MelonJS engine](http://melonjs.org/) controls interactive conversation between a characters in the game. For building data source structure you can use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/).
+This plugin for [MelonJS engine](http://melonjs.org/) controls interactive conversation between a characters in a game. For building data source structure you can use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/).
 
 **MelonJS Version**: 0.9.9
 
 **Status**: under construction
-
-### Online demo
-- TODO
 
 ###Type of dialogues:
 - Linear
