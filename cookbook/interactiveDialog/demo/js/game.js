@@ -31,6 +31,9 @@ var game = {
 
 	// Load the resources.
 	me.loader.preload(game.resources);
+	
+	// Load dialog plugin
+	me.plugin.register(dialog, "dialog");
 
 	// Initialize melonJS and display a loading screen.
 	me.state.change(me.state.LOADING);					  

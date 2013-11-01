@@ -142,13 +142,13 @@
             test("_getSentenceAsDOM", function() { 
              		dialog.setData( DATA );        
                     var container = dialog._getSentenceAsDOM( DATA.dialogues[0] );                                    
-                    equal( container.getAttribute("class"), "Ogre");                                                                                                                                                                                 
+                    equal( container.getAttribute("class"), "dialog Ogre");                                                                                                                                                                                 
             });
             
             test("_getChoiceAsDOM", function() { 
              		dialog.setData( DATA );        
                     var container = dialog._getChoiceAsDOM( DATA.dialogues[2] ); 
-                    equal( container.getAttribute("class"), "choice");                     
+                    equal( container.getAttribute("class"), "dialog choice");                     
                     equal( container.childNodes.length, 2);                                                                                                                                                                                 
             });
                

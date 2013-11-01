@@ -44,12 +44,16 @@ game.BaseEntity = me.ObjectEntity.extend({
      /**
 	 * default on collision handler	
 	 */ 
-    onCollision : function (res, obj){  
-    	console.log("collision");  	    	
+    onCollision : function (res, obj){      
+    	console.log("collision");		    
     	delete this._target;    	  
     	this._setDirection( -res.x, -res.y );
-    	this.renderable.setCurrentAnimation( this.direction );    	  		 
-    },         
+    	this.renderable.setCurrentAnimation( this.direction );     	  	  		
+    },  
+    
+    onDialogReset:function(){
+    	delete this.isTalking;    	
+    },       
 });
 
 game.HeroEntity = game.BaseEntity.extend({
@@ -93,10 +97,12 @@ game.HeroEntity = game.BaseEntity.extend({
                                    
         // check for collision
         var res =  me.game.world.collide(this);    	
-    	if (res) {        		    		  		    		  		    	  
+    	if (res && (res.obj.type == me.game.ENEMY_OBJECT)) {        		    		  		    		  		    	  
     		delete this._target;    		
     		this.pos.x -= res.x;
-    		this.pos.y -= res.y;    		    		    		    		   		    		      		    		    		    			    		    				    		  
+    		this.pos.y -= res.y; 
+    		
+    		this.doTalk( res.obj );   		    		    		    		   		    		      		    		    		    			    		    				    		  
     	}
     	    	    	    	        	    	                   	         
         // update animation if necessary
@@ -110,6 +116,16 @@ game.HeroEntity = game.BaseEntity.extend({
         // any update (e.g. position, animation)
         return false;
     }, 
+    
+    /**
+     * Start conversation
+     * @param {Object} entity
+     */
+    doTalk:function( entity ){
+    	entity.isTalking = true;
+    	this.talkWith = entity;    	
+    	entity.dialog.show();
+    },
           
     /**
 	 * Mouse down handler
@@ -120,7 +136,13 @@ game.HeroEntity = game.BaseEntity.extend({
     	this._target.x = e.gameWorldX - Math.floor( this.width / 2 );    	
     	this._target.y = e.gameWorldY - Math.floor( this.height / 2 );        	  
     	this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);    
-    	this.renderable.setCurrentAnimation( this.direction );        	    	  		    	
+    	this.renderable.setCurrentAnimation( this.direction );
+    	
+    	// Hero just talking
+    	if( this.talkWith ){
+    		this.talkWith.dialog.reset();  
+    		delete this.talkWith;  		
+    	}        	    	  		    	
     }, 
     
     onDestroyEvent : function() {		
@@ -157,19 +179,23 @@ game.GirlEntity = game.BaseEntity.extend({
         this.minY = y;
         this.maxX = x + settings.width - settings.spritewidth;
         this.maxY = y + settings.height - settings.spriteheight;
-        
-        /*                                                                                                                                   
+                                                                                                                                               
 		this.walkInterval = setInterval(function(){
-			this._setTargetPosition( 
-        		Number(0).random(this.minX, this.maxX), 
-        		Number(0).random(this.minY, this.maxY));        		
-		}.bind(this), 5000);
-		*/		  							    	        	          
+			if(!this.isTalking){
+				this._setTargetPosition( 
+        			Number(0).random(this.minX, this.maxX), 
+        			Number(0).random(this.minY, this.maxY));
+        	}        		
+		}.bind(this), 5000);	
+		
+		// create dialog
+		this.dialog = me.plugin.dialog.newInstance( DIALOGUES[ this.name ], this.onDialogReset.bind(this) );					  							    	        	        
 	},
 	
     update: function() {    	        
-        if (!this.inViewport)
-            return false;
+        if (!this.inViewport){
+        	return false;
+        }
             
         this._calculateStep();
     	           

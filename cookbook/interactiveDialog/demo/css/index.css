@@ -17,6 +17,11 @@ body {
 	margin: 0;
 }
 
+#screen{
+	position:relative;
+	width:480px;
+}
+
 #screen canvas {
 	margin: auto;
 
@@ -31,3 +36,50 @@ body {
 	image-rendering: optimize-contrast;
 	-ms-interpolation-mode: nearest-neighbor;
 }
+
+#me-dialog{
+	position:absolute;
+	left:0;
+	bottom:0;	
+	width:100%;	
+}
+
+#me-dialog .dialog{
+	background:white;
+	min-height:50px;
+	border-top:1px solid #333;	
+}
+
+#me-dialog .dialog:before {   
+   content:"";
+   background:transparent url(../data/img/faces.png) no-repeat 0 0;
+   width: 50px;
+   height: 50px;
+   display:block;
+   float:left;
+   margin-right:0.5em;
+}
+
+#me-dialog .dialog p{
+	margin:0;
+	padding:1em;
+	color:#333;		
+	cursor:pointer;		
+}
+
+#me-dialog .choice p{
+	margin-left:60px;		
+}
+
+#me-dialog .hero:before {
+	background-position:0 0;
+}
+
+#me-dialog .girl:before {
+	background-position:0 -50px;	
+}
+
+#me-dialog .choice:before {
+	background-position:0 -100px;	
+}
+

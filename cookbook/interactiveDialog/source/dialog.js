@@ -36,15 +36,20 @@
         	 * @public
              * @function
         	 * @param {?Object} data 
+        	 * @param {?Function} onReset - callback when dialog is reset
         	 * @return {me.Dialog}        
         	 */
-        	newInstance:function( data ){
+        	newInstance:function( data, onReset ){
         		var dialog = new me.Dialog();
         		
-        		if( data ){
+        		if(data){
         			dialog.setData( data );	
+        		} 
+        		        		        	
+        		if (typeof onReset == "function"){
+        			dialog.onReset = onReset;        			
         		}
-        		
+        		        		
         		return dialog;
         	}        	
         });
@@ -138,16 +143,14 @@
 			},	
 			
 			/**
-			 * show sentence as HTML
+			 * show a sentence as HTML
 			 * @name me.Dialog#show
 			 * @public
 			 * @function
-			 * @param {Object} sentence			
+			 * @param {?Object} sentence			
 			 */
-			show:function( sentence ){
-				if( !sentence ){
-                    throw new Error("[me.Dialog#show] Sentence is null.");
-            	};
+			show:function( sentence ){				            
+            	var sentence = sentence || this.get();
             	
             	this.cleanDOMContainer();
             	
@@ -223,9 +226,10 @@
 		     */
 		    reset:function(){
 		    	this._sentence = null;	
-		    	this.cleanDOMContainer();	    	
+		    	this.cleanDOMContainer();			    	
+		    	this.onReset && this.onReset();   	
 		    },
-		    		    
+		    		    				    		 
 		    /**
 	         * get DOM container
 	         * @name me.Dialog#getDOMContainer	         
@@ -234,8 +238,8 @@
 	         * @return {Object} DOM element
 	         */
 	        getDOMContainer:function(){
-	        	var container = document.getElementById( me.Dialog.DOM_CONTAIN_ID );
-	                
+	        	var container = document.getElementById( me.Dialog.DOM_CONTAINER_ID );
+	        		        		              
                 if( !container ){
                         container = document.createElement("div");
                         container.setAttribute("id", me.Dialog.DOM_CONTAINER_ID );
@@ -338,7 +342,7 @@
 			 */
             _getSentenceAsDOM:function( sentence ){
             	var container = document.createElement("div");
-                container.setAttribute("class", this.getActor( sentence.actor ).name );                                                                            
+                container.setAttribute("class", "dialog " + this.getActor( sentence.actor ).name );                                                                            
                 container.appendChild( this._createSentence( sentence ));                                             
                 return container;            	
             },
@@ -353,7 +357,7 @@
 			 */
             _getChoiceAsDOM:function( choice ){
             	var container = document.createElement("div");
-                container.setAttribute("class", "choice");
+                container.setAttribute("class", "dialog choice");
                                
                 for(var idx = 0; idx < choice.outgoingLinks.length; idx++ ){
                 	var sentence = this.find( choice.outgoingLinks[idx] );
@@ -376,10 +380,29 @@
 			_createSentence:function( sentence ){				
 				var sentenceWrapper = document.createElement( me.Dialog.SENTENCE_ELEMENT );
                 sentenceWrapper.setAttribute("data-sentence-id", sentence.id );
-                sentenceWrapper.appendChild( document.createTextNode( sentence.dialogueText) );
-				
+                sentenceWrapper.appendChild( document.createTextNode( sentence.dialogueText));                                             
+                sentenceWrapper.addEventListener(this._isTouchDevice() ? "touchstart" : "mousedown", function(e){
+                	 var currentSentence = this.find(e.target.getAttribute("data-sentence-id"));
+                	 var nextSentence = currentSentence.outgoingLinks.length == 1 ? currentSentence.outgoingLinks[0] : null;                	 
+                	 this.set( nextSentence );
+                     if( this._sentence ){
+                     	this.show();
+                     }                	 
+                }.bind(this), false);
+                               			
 				return sentenceWrapper;
-			},													                     																														
+			},	
+			
+			/**
+			 * Is touch device
+			 * @name me.Dialog#_isTouchDevice
+			 * @private
+			 * @function
+			 * @return {boolean}
+			 */
+			_isTouchDevice:function(){
+        		return ('ontouchstart' in document.documentElement);        
+			},												                     																														
         });
                 
 		 /**
@@ -390,7 +413,7 @@
 		 * @type {string}
 		 */
         me.Dialog.DOM_CONTAINER_ID = "me-dialog";
-        
+                     
         /**
 		 * DOM Element for a sentence
 		 * @constant
