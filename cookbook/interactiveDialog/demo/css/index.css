@@ -68,8 +68,19 @@ body {
 }
 
 #me-dialog .choice p{
-	margin-left:60px;		
+	margin-left:60px;
+	padding:0;		
 }
+
+#me-dialog .choice p:first-child{
+	padding-top:0.5em;		
+}
+
+#me-dialog .choice p:last-child{
+	padding-bottom:0.5em;		
+}
+
+
 
 #me-dialog .hero:before {
 	background-position:0 0;

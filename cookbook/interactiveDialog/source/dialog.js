@@ -363,7 +363,7 @@
                 	var sentence = this.find( choice.outgoingLinks[idx] );
                 	if( !this._isActive( sentence )) continue;
                         
-                	container.appendChild( this._createSentence( sentence ));                        
+                	container.appendChild( this._createMenuItem( sentence ));                        
                 }
                                                
                 return container;            	
@@ -392,6 +392,28 @@
                                			
 				return sentenceWrapper;
 			},	
+			
+			/**
+			 * create DOM for a choice 
+			 * @name me.Dialog#_createMenuItem
+			 * @private
+			 * @function
+			 * @param {Object} sentence
+			 * @return {Object} DOM element
+			 */
+			_createMenuItem:function( sentence ){
+				var menuItem = document.createElement( me.Dialog.SENTENCE_ELEMENT );
+                menuItem.setAttribute("data-sentence-id", sentence.id );
+                menuItem.appendChild( document.createTextNode( sentence.menuText));                
+                menuItem.addEventListener(this._isTouchDevice() ? "touchstart" : "mousedown", function(e){                	 
+                	 this.set( e.target.getAttribute("data-sentence-id") ); 
+                	 if( this._sentence ){
+                     	this.show();
+                     }                	                 	               	
+                }.bind(this), false);
+                  
+				return menuItem;
+			},
 			
 			/**
 			 * Is touch device
