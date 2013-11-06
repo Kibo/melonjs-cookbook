@@ -97,25 +97,28 @@
                     ok( !dialog._isActive( sentence ));                                       
             });
             
-            test("set", function() {                         
-                    dialog.setData( DATA ); 
+            test("set", function() { 
+            	dialog.setData( DATA );                     
+                
+                dialog.set(10);
+                equal( dialog._sentence.id, 10);
+                
+                dialog.set(41);
+                equal( dialog._sentence.id, 41);            	
+            });
+            
+            test("_next", function() { 
+            		DATA.dialogues[0].codeAfter = 'this._sentence.testaAfter=123';
+                    DATA.dialogues[1].codeBefore = 'this._sentence.testaBefore=123';                        
                     
-                    dialog.set(10);
-                    equal( dialog._sentence.id, 10);
-                                        
-                    dialog._data.dialogues[0].conditionsString = "false";
-                    dialog.set(10);
-                    equal( dialog._sentence.id, 20);
-                    dialog._data.dialogues[0].conditionsString = "";
-                    
-                    dialog.set(41);
-                    equal( dialog._sentence.id, 41);
-                                                                                        
-                    dialog.set();
-                    equal( dialog._sentence, null);
-                    
-                    dialog.set( 999 );
-                    equal( dialog._sentence, null);                                                
+                    dialog.setData( DATA );                     
+                    dialog._sentence = DATA.dialogues[0];
+                                                          
+                    dialog._next();
+                                                           
+                    equal( DATA.dialogues[0].testaAfter, 123);
+                    deepEqual( dialog._sentence, DATA.dialogues[1] );   
+                    equal( DATA.dialogues[1].testaBefore, 123);                                                               
             });
             
             test("get", function() {        
@@ -127,8 +130,8 @@
                     deepEqual( dialog.get(), DATA.dialogues[4] );                                                                        
             });
             
-            test("getDOMContainer", function() {        
-                    var container = dialog.getDOMContainer();                   
+            test("_getDOMContainer", function() {        
+                    var container = dialog._getDOMContainer();                   
                     equal( container.getAttribute("id"), me.Dialog.DOM_CONTAINER_ID);                                                                                                                                                                 
             });
             

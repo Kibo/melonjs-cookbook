@@ -119,46 +119,24 @@
 			 * @function
 			 * @param {number} id 		
 			 */			
-			 set:function( id ){
-				if(this._sentence){
-                    this._execCode( this._sentence.codeAfter );
-            	}
-            	
-            	this._sentence = this.find( id );
-            	
-            	if( !this._sentence ){ 
-            		this.reset();                         
-                    return;
-            	}
-            	
-            	this._execCode( this._sentence.codeBefore );
-            	            	            		           			            		                                                                                                                                       
-                if( !this._isActive( this._sentence )){ // go to next sentence                                     
-                    var nextSentenceId = this._sentence.outgoingLinks.length == 1 
-                            ? this._sentence.outgoingLinks[0] 
-                            : null; //final node or choice
-                    
-                    this.set( nextSentenceId );
-                }                                                                                    		            	     
+			set:function( id ){				            
+            	this._sentence = this.find( id );            	                                                                                   		            	    
 			},	
 			
 			/**
 			 * show a sentence as HTML
 			 * @name me.Dialog#show
 			 * @public
-			 * @function
-			 * @param {?Object} sentence			
+			 * @function				
 			 */
-			show:function( sentence ){				            
-            	var sentence = sentence || this.get();
+			show:function(){				            	            				            	              	          
+            	this._cleanDOMContainer();
             	
-            	this.cleanDOMContainer();
-            	
-            	var DOMsentence = sentence.isChoice 
-                    ? this._getChoiceAsDOM( sentence ) 
-                    : this._getSentenceAsDOM( sentence );
+            	var DOMsentence = this.get().isChoice 
+                    ? this._getChoiceAsDOM( this.get() ) 
+                    : this._getSentenceAsDOM( this.get() );
                                                        
-            	this.getDOMContainer().appendChild(  DOMsentence  );            			
+            	this._getDOMContainer().appendChild(  DOMsentence  );            			
 			},
 						
 			/**
@@ -205,7 +183,7 @@
 			 * @param {number} id
 			 * @return {?Object} dialog or null
 			 */		
-			find: function( id ){
+			find: function( id ){										
 				var dialog = null;
 				
 				for(var idx = 0; idx < this._data.dialogues.length; idx++){
@@ -226,18 +204,43 @@
 		     */
 		    reset:function(){
 		    	this._sentence = null;	
-		    	this.cleanDOMContainer();			    	
+		    	this._cleanDOMContainer();			    	
 		    	this.onReset && this.onReset();   	
+		    },
+		    
+		    
+		    /**
+	         * set next sentence
+	         * @name me.Dialog#_next	         
+	         * @private
+	         * @function
+	         */
+		    _next:function(){
+		    	if( this._sentence ){
+                    this._execCode( this._sentence.codeAfter );
+            	}
+            	
+            	var nextSentenceID = this._sentence.outgoingLinks.length == 1 ? this._sentence.outgoingLinks[0] : null;            	                        	            	            	         
+		    	this.set( nextSentenceID );		    	
+		    	if( !this._sentence ){ 
+            		this.reset();                         
+                    return;
+            	}
+            	
+            	this._execCode( this._sentence.codeBefore );            	
+            	if( !this._isActive( this._sentence )){ // go to next sentence
+            		this._next();            	
+            	}            	            
 		    },
 		    		    				    		 
 		    /**
 	         * get DOM container
-	         * @name me.Dialog#getDOMContainer	         
-	         * @public
+	         * @name me.Dialog#_getDOMContainer	         
+	         * @private
 	         * @function
 	         * @return {Object} DOM element
 	         */
-	        getDOMContainer:function(){
+	        _getDOMContainer:function(){
 	        	var container = document.getElementById( me.Dialog.DOM_CONTAINER_ID );
 	        		        		              
                 if( !container ){
@@ -251,12 +254,12 @@
 	        
 	         /**
 	         * clean the DOM container
-	         * @name me.Dialog#cleanDOMContainer	         
-	         * @public
+	         * @name me.Dialog#_cleanDOMContainer	         
+	         * @private
 	         * @function	         
 	         */
-	        cleanDOMContainer:function(){
-	        	this.getDOMContainer().innerHTML = '';	
+	        _cleanDOMContainer:function(){
+	        	this._getDOMContainer().innerHTML = '';	
 	        },
 		    		    		
 			/**
@@ -382,9 +385,8 @@
                 sentenceWrapper.setAttribute("data-sentence-id", sentence.id );
                 sentenceWrapper.appendChild( document.createTextNode( sentence.dialogueText));                                             
                 sentenceWrapper.addEventListener(this._isTouchDevice() ? "touchstart" : "mousedown", function(e){
-                	 var currentSentence = this.find(e.target.getAttribute("data-sentence-id"));
-                	 var nextSentence = currentSentence.outgoingLinks.length == 1 ? currentSentence.outgoingLinks[0] : null;                	 
-                	 this.set( nextSentence );
+                	 var currentSentence = this.find(e.target.getAttribute("data-sentence-id"));                	               	
+                	 this._next();                	                 	
                      if( this._sentence ){
                      	this.show();
                      }                	 
