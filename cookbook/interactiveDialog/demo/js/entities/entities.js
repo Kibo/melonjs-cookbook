@@ -53,7 +53,25 @@ game.BaseEntity = me.ObjectEntity.extend({
     
     onDialogReset:function(){
     	delete this.isTalking;    	
-    },       
+    },   
+    
+    onDialogShow:function( event ){    	
+    	if(event.sentence.isChoice){
+    		return;	
+    	}
+    		    	
+    	// create sound icon    	    
+    	var icon = document.createElement( "i" );
+    	icon.setAttribute( "class", "glyphicon glyphicon-volume-up");
+    	icon.addEventListener( me.device.touch ? "touchstart" : "mousedown", function( e ) {
+    		e.preventDefault();
+    		e.stopPropagation();
+			console.log("play sound: " + event.sentence.dialogueText);				
+		}.bind( this ), false );
+    	
+    	var paragraph = event.DOM.querySelector("p");    	    	        	
+    	paragraph.appendChild( icon );    	    	   	    	  
+    },    
 });
 
 game.HeroEntity = game.BaseEntity.extend({
@@ -189,7 +207,7 @@ game.GirlEntity = game.BaseEntity.extend({
 		}.bind(this), 5000);	
 		
 		// create dialog
-		this.dialog = me.plugin.dialog.newInstance( DIALOGUES[ this.name ], this.onDialogReset.bind(this) );					  							    	        	        
+		this.dialog = me.plugin.dialog.newInstance( DIALOGUES[ this.name ], this.onDialogReset.bind(this), this.onDialogShow.bind(this));					  							    	        	        
 	},
 	
     update: function() {    	        

@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../data/fonts/glyphicons-halflings-regular.eot');
+  src: url('../data/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+       url('../data/fonts/glyphicons-halflings-regular.woff') format('woff'),
+       url('../data/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+       url('../data/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+.glyphicon {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+   margin-left:1em;
+   line-height: 1em;
+}
+
+// Individual icons
+.glyphicon-volume-up{}
+.glyphicon-volume-up:before { 
+	content: "\e038"; 
+}
+
