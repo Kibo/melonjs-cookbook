@@ -3,7 +3,7 @@ This plugin controls interactive conversation between a characters in a game.
 
 **MelonJS Version**: 0.9.9
 
-**Status**: under construction
+**Status**: finished
 
 ###Type of dialogues:
 - Linear
@@ -81,7 +81,7 @@ For more information see Reference.
 }
 ```
 
-**Order of execution of code** <br />
+**Order of execution code** <br />
 if conditionsString == true<br/>
 	do codeBefore<br/>
 	do show<br/>
