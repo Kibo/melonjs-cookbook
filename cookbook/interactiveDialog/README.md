@@ -46,7 +46,7 @@ Get the current sentence
 dialog.get();
 ```
 
-Get a actor
+Get an actor
 ```
 dialog.getActor( id );
 ```
