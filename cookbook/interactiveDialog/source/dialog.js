@@ -67,9 +67,9 @@
 	 * @constructor
 	 * @example
 	 * // create instance of me.Dialog class
-	 * entity.dialog = me.plugin.dialog.newInstance( {...} );
+	 * var dialog = me.plugin.dialog.newInstance( data );
 	 * // show dialog
-	 * entity.dialog.show();
+	 * dialog.show();
 	 */
 	me.Dialog = Object.extend( {
 
