@@ -1,5 +1,5 @@
 # Interactive dialog
-This plugin controls interactive conversation between a characters in a game. For building data source structure you can use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/).
+This plugin controls interactive conversation between a characters in a game.
 
 **MelonJS Version**: 0.9.9
 
@@ -56,6 +56,7 @@ Find a sentence
 dialog.find( id );
 ```
 
+
 For more detail see [plugin source](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js).
 
 ###Sentence data structure
@@ -82,10 +83,10 @@ For more information see Reference.
 
 **Order of execution of code**
 
-1. codeBefore
-2. conditionsString
-3. codeAfter
-
+if conditionsString == true
+	do codeBefore
+	do show
+	do codeAfter
 
 ####Dialog container
 Use CSS to design your dialog UI.

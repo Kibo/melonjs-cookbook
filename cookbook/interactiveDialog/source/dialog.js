@@ -111,7 +111,11 @@
 		 */
 		get: function( ) {
 			if( !this._sentence ) {
-				this.set( this.getRoot( ).id );
+				this._sentence = this.getRoot();				
+				if( !this._isActive( this._sentence )) {			
+					this._next();				
+				}
+				this._execCode( this._sentence.codeBefore );							
 			}
 
 			return this._sentence;
@@ -134,7 +138,7 @@
 		 * @public
 		 * @function
 		 */
-		show: function( ) {
+		show: function( ) {												
 			this._cleanDOMContainer( );
 
 			var DOMSentence = this.get( ).isChoice ? this._getChoiceAsDOM( this.get( ) ) : this._getSentenceAsDOM( this.get( ) );
@@ -221,7 +225,7 @@
 		 * @function
 		 */
 		_next: function( ) {
-			if( this._sentence ) {
+			if( this._sentence && this._isActive( this._sentence )) {
 				this._execCode( this._sentence.codeAfter );
 			}
 
@@ -231,11 +235,12 @@
 				this.reset( );
 				return;
 			}
-
-			this._execCode( this._sentence.codeBefore );
-			if( !this._isActive( this._sentence ) ) {// go to next sentence
-				this._next( );
+					
+			if( !this._isActive( this._sentence )) {			
+				this._next( );				
 			}
+			
+			this._execCode( this._sentence.codeBefore );			
 		},
 
 		/**
@@ -329,7 +334,7 @@
 		 * @param {Object} sentence
 		 * @return {boolean}
 		 */
-		_isActive: function( sentence ) {
+		_isActive: function( sentence ) {			
 			return sentence.conditionsString ? this._execCode( sentence.conditionsString ) : true;
 		},
 
@@ -408,7 +413,11 @@
 			menuItem.appendChild( document.createTextNode( sentence.menuText ) );
 			menuItem.addEventListener( this._isTouchDevice( ) ? "touchstart" : "mousedown", function( e ) {
 				this.set( e.target.getAttribute( "data-sentence-id" ) );
-				if( this._sentence ) {
+				if( this._sentence ) {					
+					if( !this._isActive( this._sentence )) {			
+						this._next();				
+					}
+					this._execCode( this._sentence.codeBefore );	
 					this.show( );
 				}
 			}.bind( this ), false );

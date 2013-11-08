@@ -44,8 +44,7 @@ game.BaseEntity = me.ObjectEntity.extend({
      /**
 	 * default on collision handler	
 	 */ 
-    onCollision : function (res, obj){      
-    	console.log("collision");		    
+    onCollision : function (res, obj){    		   
     	delete this._target;    	  
     	this._setDirection( -res.x, -res.y );
     	this.renderable.setCurrentAnimation( this.direction );     	  	  		
