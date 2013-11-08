@@ -15,9 +15,9 @@ This plugin controls interactive conversation between a characters in a game. Fo
 - Combined dialogue
 
 ###Work procedure:
-1) Use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/) to create conversation tree.
-2) Export a conversation as JSON ([example](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/data/dialog/dialogues.js))
-3) Register this plugin to [MelonJS](http://melonjs.org/).
+1. Use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/) to create conversation tree.
+2. Export a conversation as JSON ([example](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/data/dialog/dialogues.js))
+3. Register this plugin to [MelonJS](http://melonjs.org/).
 
 ###Usage
 
@@ -77,13 +77,14 @@ dialog.find( id );
 ```
 
 **Order of execution of code**
+
 1. codeBefore
 2. conditionsString
 3. codeAfter
 
 
 ####Dialog container
-Use CSS to design your dialog UI. ([example](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/css/index.css)).
+Use CSS to design your dialog UI.
 
 **Sentence in DOM**
 ```
