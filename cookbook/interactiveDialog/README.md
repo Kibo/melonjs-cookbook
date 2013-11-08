@@ -81,8 +81,7 @@ For more information see Reference.
 }
 ```
 
-**Order of execution of code**
-
+**Order of execution of code** <br />
 if conditionsString == true<br/>
 	do codeBefore<br/>
 	do show<br/>
