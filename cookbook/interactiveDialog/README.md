@@ -57,6 +57,7 @@ dialog.find( id );
 ```
 
 ###Sentence data structure
+For more information see Reference.
 **Sentence as data**
 ```
 {
