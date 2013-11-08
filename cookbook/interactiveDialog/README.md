@@ -36,7 +36,7 @@ Create a new conversation. ([see demo](https://github.com/Kibo/melonjs-cookbook/
 var dialog = me.plugin.dialog.newInstance( DATA );
 ```
 
-[Show dialog](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/js/entities/entities.js#L145) Display dialog when meeting characters.
+[Display dialog](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/js/entities/entities.js#L145) when meeting characters.
 ```
 dialog.show();
 ```
@@ -55,6 +55,8 @@ Find a sentence
 ```
 dialog.find( id );
 ```
+
+For more detail see [plugin source](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js).
 
 ###Sentence data structure
 For more information see Reference.
@@ -106,9 +108,6 @@ Use CSS to design your dialog UI.
 	</div>
 </div>
 ```
-
-### Plugin source
-- [plugin](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js)
 
 ###Advantage:
 - no depending on the third party library
