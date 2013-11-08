@@ -83,9 +83,9 @@ For more information see Reference.
 
 **Order of execution of code**
 
-if conditionsString == true
-	do codeBefore
-	do show
+if conditionsString == true<br/>
+	do codeBefore<br/>
+	do show<br/>
 	do codeAfter
 
 ####Dialog container
