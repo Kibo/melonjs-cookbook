@@ -1,5 +1,5 @@
 # Interactive dialog
-The extension adds a ability to control interactive conversation between a characters in a game.
+The extension adds an ability to control interactive conversation between a characters in a game.
 
 **MelonJS Version**: 0.9.9
 
@@ -17,7 +17,7 @@ The extension adds a ability to control interactive conversation between a chara
 ###Work procedure:
 1. Use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/) to create conversation tree.
 2. Export a conversation as JSON ([example](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/data/dialog/dialogues.js))
-3. TODO Register this plugin to [MelonJS](http://melonjs.org/).
+3. Create new class of game.Data and set a data for conversation
 
 ###Usage
 
@@ -51,7 +51,7 @@ Find a sentence
 dialog.find( id );
 ```
 
-For more detail see [demo](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/interactiveDialog/demo) or [plugin source](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js).
+For more detail see [demo](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/interactiveDialog/demo) or [source](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js).
 
 ###Sentence data structure
 For more information see Reference.
