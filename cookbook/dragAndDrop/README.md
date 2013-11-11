@@ -1,6 +1,7 @@
 ## Bag plugin
-A plugin for MelonJS that lets store artifacts in a backpack. 
-The player can return an artifact into the game and use artifact from the bag using **Drag and Drop**.
+The extension lets store artifacts in a backpack, 
+return an artifact from backpack into the game and 
+use artifact from the bag using **Drag and Drop**
 
 **MelonJS Version**: 0.9.9
 

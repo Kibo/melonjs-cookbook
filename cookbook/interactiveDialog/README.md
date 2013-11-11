@@ -1,5 +1,5 @@
 # Interactive dialog
-This plugin controls interactive conversation between a characters in a game.
+The extension adds a ability to control interactive conversation between a characters in a game.
 
 **MelonJS Version**: 0.9.9
 
@@ -17,26 +17,21 @@ This plugin controls interactive conversation between a characters in a game.
 ###Work procedure:
 1. Use [Dialogues builder tool](http://kibo.github.com/dialoguesBuilder/) to create conversation tree.
 2. Export a conversation as JSON ([example](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/data/dialog/dialogues.js))
-3. Register this plugin to [MelonJS](http://melonjs.org/).
+3. TODO Register this plugin to [MelonJS](http://melonjs.org/).
 
 ###Usage
 
-[Get resource](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/index.html#L23) in your index.html 
+Get resource to your index.html 
 ```
-<script type="text/javascript" src="data/dialog/dialogues.js"></script>
-```
-
-[Register](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/js/game.js#L36) this plugin to MelonJS
-```
-me.plugin.register(dialog, "dialog");
+<script type="text/javascript" src="data/dialog/dialog.js"></script>
 ```
 
-Create a new conversation. ([see demo](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/js/entities/entities.js#L210))
+Create a new conversation.
 ```
-var dialog = me.plugin.dialog.newInstance( DATA );
+var dialog = new game.Dialog( DATA );
 ```
 
-[Display dialog](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/demo/js/entities/entities.js#L145) when meeting characters.
+Display dialog when meeting characters.
 ```
 dialog.show();
 ```
@@ -56,8 +51,7 @@ Find a sentence
 dialog.find( id );
 ```
 
-
-For more detail see [plugin source](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js).
+For more detail see [demo](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/interactiveDialog/demo) or [plugin source](https://github.com/Kibo/melonjs-cookbook/blob/master/cookbook/interactiveDialog/source/dialog.js).
 
 ###Sentence data structure
 For more information see Reference.
@@ -92,7 +86,7 @@ Use CSS to design your dialog UI.
 
 **Sentence in DOM**
 ```
-<div id="me-dialog">
+<div id="game-dialog">
 	<div class="dialog hero">
 		<p data-sentence-id="40">Nice to see you.</p>
 	</div>
@@ -101,7 +95,7 @@ Use CSS to design your dialog UI.
 
 **Choice in DOM**
 ```
-<div id="me-dialog">
+<div id="game-dialog">
 	<div class="dialog choice">
 		<p data-sentence-id="50">Ask about cave.</p>
 		<p data-sentence-id="60">Leave</p>

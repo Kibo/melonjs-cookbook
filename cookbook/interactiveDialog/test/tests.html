@@ -10,20 +10,30 @@
 		<script src="../source/dialog.js"></script>
 		<script>
 			window.onload = function( ) {
-				window.me = window.me || {};
 				var dialog = null;
 
 				module( "module A", {
 					setup: function( ) {
-						dialog = new me.Dialog( );
+						dialog = new game.Dialog();
 					},
 
 					teardown: function( ) {
 						dialog = null;
 					}
 				} );
+								
+				test( "constructor", function( ) {		
+					var onReset = function(){ var a = 10; };			
+					var onShow = function(){ var b = 20; };
+					var myDialog = new game.Dialog( DATA, onReset, onShow );
+					
+					deepEqual( myDialog.getData(), DATA );
+					deepEqual( myDialog.onReset, onReset );
+					deepEqual( myDialog.onShow, onShow );					
+				});
 
 				test( "_getRoots", function( ) {
+														
 					equal( dialog._getRoots( DATA ), 1 );
 
 					var twoParents = DATA;
@@ -136,12 +146,12 @@
 
 				test( "_getDOMContainer", function( ) {
 					var container = dialog._getDOMContainer( );
-					equal( container.getAttribute( "id" ), me.Dialog.DOM_CONTAINER_ID );
+					equal( container.getAttribute( "id" ), game.Dialog.DOM_CONTAINER_ID );
 				} );
 
 				test( "_createSentence", function( ) {
 					var container = dialog._createSentence( DATA.dialogues[ 0 ] );
-					equal( container.nodeName.toLowerCase( ), me.Dialog.SENTENCE_ELEMENT );
+					equal( container.nodeName.toLowerCase( ), game.Dialog.SENTENCE_ELEMENT );
 					equal( container.getAttribute( "data-sentence-id" ), "10" );
 					equal( container.innerHTML, "Where is the cave?" );
 				} );

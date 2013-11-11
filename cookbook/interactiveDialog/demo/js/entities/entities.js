@@ -206,7 +206,7 @@ game.GirlEntity = game.BaseEntity.extend({
 		}.bind(this), 5000);	
 		
 		// create dialog
-		this.dialog = me.plugin.dialog.newInstance( DIALOGUES[ this.name ], this.onDialogReset.bind(this), this.onDialogShow.bind(this));					  							    	        	        
+		this.dialog = new game.Dialog( DIALOGUES[ this.name ], this.onDialogReset.bind(this), this.onDialogShow.bind(this));					  							    	        	        
 	},
 	
     update: function() {    	        
