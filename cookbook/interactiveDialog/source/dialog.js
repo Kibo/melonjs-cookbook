@@ -2,7 +2,7 @@ window.game = window.game || {};
 /**
  * A dialog extension
  *
- * The extension for MelonJS Entity class (me.ObjectEntity) adds a ability to control interactive conversation between a characters in a game.
+ * The extension adds an ability to control interactive conversation between a characters in a game.
  *
  * Minimum melonJS version expected: 0.9.9
  *
@@ -16,7 +16,7 @@ window.game = window.game || {};
  * @constructor
  * @param {?Object} data
  * @param {?Function} onReset - callback when dialog is reset
- * @param {?Function} onShow - callback when dialog is show
+ * @param {?Function} onShow - callback when dialog is showed
  * @example
  * myEntity.dialog = new game.Dialog();
  */
