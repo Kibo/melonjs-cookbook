@@ -1,7 +1,7 @@
 # Interactive dialog
 The extension adds an ability to control interactive conversation between a characters in a game.
 
-**MelonJS Version**: 0.9.9
+**MelonJS Version**: independent
 
 **Status**: finished
 

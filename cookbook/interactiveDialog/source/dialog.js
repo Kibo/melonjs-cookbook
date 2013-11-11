@@ -3,9 +3,6 @@ window.game = window.game || {};
  * A dialog extension
  *
  * The extension adds an ability to control interactive conversation between a characters in a game.
- *
- * Minimum melonJS version expected: 0.9.9
- *
  * For building data structure of your conversation you can use the Dialogues builder tool.
  *
  * @author Tomas Jurman (tomasjurman@gmail.com)
