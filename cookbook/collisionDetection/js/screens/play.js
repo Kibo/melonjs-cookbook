@@ -9,7 +9,6 @@ game.PlayScreen = me.ScreenObject.extend({
 		me.game.add (enemy, 1);
 	},
 
-
 	/**	
 	 *  action to perform when leaving this screen (state change)
 	 */

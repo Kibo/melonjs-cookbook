@@ -29,5 +29,5 @@ body {
 	image-rendering: -o-crisp-edges;
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: optimize-contrast;
-	-ms-interpolation-mode: nearest-neighbor;
+	-ms-interpolation-mode: nearest-neighbor;	
 }

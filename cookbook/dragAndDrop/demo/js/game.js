@@ -44,7 +44,7 @@ var game = {
 				
 		// add our player entity in the entity pool
    		me.entityPool.add("hero", game.HeroEntity);
-   		     	   	   	   	   	   	
+   		   		 		   		   		     	   	   	   	   	 
 		// Start the game.
 		me.state.change(me.state.PLAY);
 	}

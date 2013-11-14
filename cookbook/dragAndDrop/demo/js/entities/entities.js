@@ -110,3 +110,8 @@ game.HeroEntity = game.MouseControlledEntity.extend({
 		me.input.releasePointerEvent('mousedown', me.game.viewport);	
     },        
 });
+
+
+
+
+

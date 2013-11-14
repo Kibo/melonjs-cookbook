@@ -6,31 +6,44 @@
 		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
 		<script src="../../../lib/melonJS-0.9.9-min.js"></script>
+		<script src="../source/bag.js"></script>
 
 		<script>
-			window.onload = function( ) {
-				window.me = window.me || {};
-
+			window.onload = function( ) {			
+				me.video.init("screen", 480, 320, true);
+																	
 				module( "module A", {
-					setup: function( ) {
-
-					},
-
-					teardown: function( ) {
-
-					}
+					setup: function () {},
+					teardown: function () {}
 				} );
 
-				test("TODO", function( ) {
-					equal( "TODO", 1 );
-				} );
-
+				test( "create", function( ) {													
+					
+					me.plugin.bag.create();
+					ok(  game.bag );
+					
+					equal( game.bag.pos.x, 0 );
+					equal( game.bag.pos.y, 0 );
+					equal( game.bag.width, me.video.getWidth() );
+					equal( game.bag.height, 30 );
+					
+					me.plugin.bag.remove();
+					ok( !game.bag );
+					
+					me.plugin.bag.create( 10,20,30,40,"#eeeeee");
+					ok(  game.bag );
+														
+					equal( game.bag.pos.x, 10 );
+					equal( game.bag.pos.y, 20 );
+					equal( game.bag.width, 30 );
+					equal( game.bag.height, 40 );
+				});
 			};
 			// onload
 		</script>
 	</head>
 	<body>
-		<h1 id="qunit-header">MelonJS: dialog plugin</h1>
+		<h1 id="qunit-header">MelonJS: bag plugin</h1>
 		<h2 id="qunit-banner"></h2>
 		<div id="qunit-testrunner-toolbar"></div>
 		<h2 id="qunit-userAgent"></h2>
