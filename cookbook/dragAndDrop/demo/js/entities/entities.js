@@ -9,7 +9,7 @@ game.MouseControlledEntity = me.ObjectEntity.extend({
     	this._target.x = e.gameWorldX - Math.floor( this.width / 2 );    	
     	this._target.y = e.gameWorldY - Math.floor( this.height / 2 );    
     	this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);    
-    	this.renderable.setCurrentAnimation( this.direction );     	    		    	  
+    	this.renderable.setCurrentAnimation( this.direction );         	    		    	 
     },
     
     /**

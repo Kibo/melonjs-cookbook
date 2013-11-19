@@ -5,7 +5,9 @@ game.resources = [
 	 {name: "TileA2", type:"image", src: "data/map/tileset/TileA2.png"},
 	 
 	 // bag items
-	 {name: "bone", type:"image", src: "data/img/dog-bone.png"},
+	 {name: "bell", type:"image", src: "data/img/bell.png"},
+	 {name: "gear", type:"image", src: "data/img/gear.png"},
+	 {name: "camera", type:"image", src: "data/img/camera.png"},
 		
 	/* Maps */
 	 {name: "town", type: "tmx", src: "data/map/town.tmx"},	

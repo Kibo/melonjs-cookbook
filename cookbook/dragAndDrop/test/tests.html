@@ -10,6 +10,15 @@
 
 		<script>
 			window.onload = function( ) {			
+				
+				var assets  = [
+        			{ name:"bell", type:"image", src:"../demo/data/img/bell.png" },
+        			{ name:"gear", type:"image", src:"../demo/data/img/gear.png" },
+        			{ name:"camera", type:"image", src:"../demo/data/img/camera.png" }        		
+    			];
+    			
+    			me.loader.preload( assets );
+								
 				me.video.init("screen", 480, 320, true);
 																	
 				module( "module A", {
@@ -37,6 +46,28 @@
 					equal( game.bag.pos.y, 20 );
 					equal( game.bag.width, 30 );
 					equal( game.bag.height, 40 );
+				});
+				
+				test( "add-remove", function( ) {						
+					game.bag = null;
+					me.plugin.bag.create();
+					
+					equal( game.bag.items.length, 0);
+					
+					var bell = new me.SpriteObject (100, 100, me.loader.getImage("bell"));
+					game.bag.add( bell );
+					equal( game.bag.items.length, 1);
+					
+					var gear = new me.SpriteObject (100, 100, me.loader.getImage("gear"));
+					game.bag.add( gear );
+					equal( game.bag.items.length, 2);			
+					
+					game.bag.remove( bell );
+					equal( game.bag.items.length, 1);
+					deepEqual( game.bag.items[0], gear );
+					
+					game.bag.remove( gear );
+					equal( game.bag.items.length, 0);												
 				});
 			};
 			// onload

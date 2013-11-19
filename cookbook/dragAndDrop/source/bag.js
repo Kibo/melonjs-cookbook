@@ -110,11 +110,32 @@ window.game = window.game || {};
 
 			// ensure me.game.removeAll() will not remove the bag
 			this.isPersistent = true;
+			
+			me.input.registerPointerEvent('mousedown', this, function(e){
+				e.stopPropagation(); 
+				e.preventDefault();			
+				console.log('clicked'); } );					
 		},
-
+		
+		/**
+		 * add item to the bag
+		 * @param {me.Renderable} item
+		 */
 		add: function( item ) {
+			this.items.push( item );								
+			this._invalidated = true;			
 		},
+		
+		/**
+		 * remove item from the bag
+		 * @param {me.Renderable} item
+		 */
 		remove: function( item ) {
+			var idx = this.items.indexOf( item );		
+			if(idx != -1){
+				this.items.splice(idx, 1);
+				this._invalidated = true;	
+			} 			
 		},
 
 		/**
@@ -133,13 +154,14 @@ window.game = window.game || {};
 			if( this._invalidated ) {
 
 				if( this.bgcolor ) {
-					me.video.clearSurface( this.bagContext, this.bgcolor );
+					me.video.clearSurface( this.bagContext, this.bgcolor ); //TODO bg image
 				}
 
-				var count = this.items.length;
-				for( var i = 0, obj = this.items[ i ]; i < count; i++ ) {
+				var count = this.items.length;				
+				for( var i = 0, obj; i < count, obj = this.items[ i ]; i++ ) {									
 					if( obj.visible ) {
-						obj.draw( this.bagContext, 0, 0 );
+						obj.draw( this.bagContext, 0, 0 );		
+						console.log(obj.pos.x);				
 						// clear the updated flag
 						if( obj.updated ) {
 							obj.updated = false;
@@ -153,7 +175,7 @@ window.game = window.game || {};
 
 			// reset the flag
 			this._invalidated = false;
-		}
+		},			
 	} );
 	
 	/**
