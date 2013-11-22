@@ -1,26 +1,38 @@
-game.PlayScreen = me.ScreenObject.extend({
-	/**	
+game.PlayScreen = me.ScreenObject.extend( {
+	/**
 	 *  action to perform on state change
 	 */
-	onResetEvent: function() {				
-		me.levelDirector.loadLevel("town");		
-					
-		var bagHeight = 30;
-		me.plugin.bag.create(0, me.game.viewport.height - bagHeight , me.game.viewport.width, bagHeight, "#eeeeee");
+	onResetEvent: function( ) {
+		me.levelDirector.loadLevel( "town" );
+	
+		me.plugin.bag.create("right", 5 );
+
+		var gear = new game.Artefact( 100, 100, {
+			image: "gear",
+			spritewidth: 30,
+			spriteheight: 30
+		} );
+	
+		var bell = new game.Artefact( 150, 150, {
+			image: "bell",
+			spritewidth: 30,
+			spriteheight: 30
+		} );
 		
-		var gear = new me.SpriteObject (0, 0, me.loader.getImage("gear"));
-		game.bag.add( gear );	
-				
-		var bell = new me.SpriteObject (30, 0, me.loader.getImage("bell"));
-		game.bag.add( bell );	
+		var camera = new game.Artefact( 200, 200, {
+			image: "camera",
+			spritewidth: 30,
+			spriteheight: 30
+		} );
 		
-		var camera = new me.SpriteObject (60, 0, me.loader.getImage("camera"));
-		game.bag.add( camera );					
+		me.game.add( gear, 10 );
+		me.game.add( bell, 20 );
+		me.game.add( camera, 30 );	
 	},
 
-	/**	
+	/**
 	 *  action to perform when leaving this screen (state change)
 	 */
-	onDestroyEvent: function() {		
+	onDestroyEvent: function( ) {
 	}
-});
+} );
