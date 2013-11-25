@@ -7,13 +7,13 @@ game.PlayScreen = me.ScreenObject.extend( {
 	
 		me.plugin.bag.create("right", 5 );
 
-		var gear = new game.Artefact( 100, 100, {
+		var gear = new game.Artefact( 200, 300, {
 			image: "gear",
 			spritewidth: 30,
 			spriteheight: 30
 		} );
 	
-		var bell = new game.Artefact( 150, 150, {
+		var bell = new game.Artefact( 250, 250, {
 			image: "bell",
 			spritewidth: 30,
 			spriteheight: 30
@@ -27,7 +27,7 @@ game.PlayScreen = me.ScreenObject.extend( {
 		
 		me.game.add( gear, 10 );
 		me.game.add( bell, 20 );
-		me.game.add( camera, 30 );	
+		me.game.add( camera, 30 );				
 	},
 
 	/**

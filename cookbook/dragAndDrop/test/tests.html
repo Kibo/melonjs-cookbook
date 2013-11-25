@@ -5,7 +5,7 @@
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
-		<script src="../../../lib/melonJS-0.9.9-min.js"></script>
+		<script src="../../../lib/melonJS-0.9.10.js"></script>
 		<script src="../source/bag.js"></script>
 
 		<script>
@@ -25,168 +25,236 @@
 					src: "../demo/data/img/camera.png"
 				} ];
 
-				me.loader.preload( assets );
-
 				me.video.init( "screen", 480, 320, true );
 
-				var gear = new me.CollectableEntity( 100, 120, {
-					image: "gear",
-					spritewidth: 30,
-					spriteheight: 30
-				} );
+				me.loader.preload( assets );
+				me.loader.onload = loaded.bind( this );
 
-				var bell = new me.CollectableEntity( 200, 220, {
-					image: "bell",
-					spritewidth: 30,
-					spriteheight: 30
-				} );
+				function loaded( ) {
+					var gear = new me.CollectableEntity( 100, 120, {
+						image: "gear",
+						spritewidth: 30,
+						spriteheight: 30
+					} );
 
-				module( "module A", {
-					setup: function( ) {
-					},
-					teardown: function( ) {
-					}
-				} );
+					var bell = new me.CollectableEntity( 200, 220, {
+						image: "bell",
+						spritewidth: 30,
+						spriteheight: 30
+					} );
 
-				test( "create", function( ) {
-					me.plugin.bag.create( );
-					ok( game.bag );
-				} );
+					module( "module A", {
+						setup: function( ) {
+						},
+						teardown: function( ) {
+						}
+					} );
 
-				test( "add", function( ) {
-					game.bag = null;
-					me.plugin.bag.create( );
-
-					equal( game.bag.items.length, 0 );
-
-					game.bag.add( gear );
-					equal( game.bag.items.length, 1 );
-					ok( gear.floating );				
-					ok( !gear.collidable );
-		
-					game.bag.add( bell );
-					equal( game.bag.items.length, 2 );
-				} );
-
-				test( "_setItemPosition - top", function( ) {
-					var PADDING = 15;
-					game.bag = null;
-					me.plugin.bag.create( "top", PADDING );
-
-					gear.pos.x = 100;
-					gear.pos.y = 120;
-					game.bag._setItemPosition( gear );
-
-					equal( gear.pos.x, PADDING );
-					equal( gear.pos.y, PADDING );
-					game.bag.add( gear );
-
-					bell.pos.x = 200;
-					bell.pos.y = 220;
-					game.bag._setItemPosition( bell );
-
-					equal( bell.pos.x, PADDING + gear.width + PADDING );
-					equal( bell.pos.y, PADDING );
-
-				} );
-
-				test( "_getWidth", function( ) {
-					var PADDING = 10;
-					game.bag = null;
-					me.plugin.bag.create( "top", PADDING );
-					game.bag.location = game.bag._LOCATIONS[ "top" ];
-
-					equal( game.bag._getWidth( ), 0 );
-
-					game.bag.add( gear );
-					equal( game.bag._getWidth( ), PADDING + gear.width + PADDING );
-
-					game.bag.add( bell );
-					equal( game.bag._getWidth( ), PADDING + bell.width + PADDING + gear.width + PADDING );
-
-					game.bag.location = game.bag._LOCATIONS[ "right" ];
-					equal( game.bag._getWidth( ), PADDING + gear.width + PADDING );
-				} );
-
-				test( "_getHeight", function( ) {
-					var PADDING = 10;
-					game.bag = null;
-					me.plugin.bag.create( "right", PADDING );
-					game.bag.location = game.bag._LOCATIONS[ "right" ];
-
-					equal( game.bag._getHeight( ), 0 );
-
-					game.bag.add( gear );
-					equal( game.bag._getHeight( ), PADDING + gear.height + PADDING );
-
-					game.bag.add( bell );
-					equal( game.bag._getHeight( ), PADDING + bell.height + PADDING + gear.height + PADDING );
-
-					game.bag.location = game.bag._LOCATIONS[ "top" ];
-					equal( game.bag._getHeight( ), PADDING + gear.height + PADDING );
-				} );
-
-				test( "remove", function( ) {
-					game.bag = null;
-					me.plugin.bag.create( );
-
-					game.bag.add( gear );
-					game.bag.add( bell );
-					equal( game.bag.items.length, 2 );
-
-					game.bag.remove( gear );
-					equal( game.bag.items.length, 1 );
-					deepEqual( game.bag.items[ 0 ], bell );
-
-					game.bag.remove( bell );
-					equal( game.bag.items.length, 0 );
+					test( "create", function( ) {
+						me.plugin.bag.create( );
+						ok( game.bag );
+					} );
 					
-					ok( !bell.floating );				
-					ok( bell.collidable );
+					test( "_getPosX", function( ) {
+						var PADDING = 15;
+						game.bag = null;
+						me.plugin.bag.create( "top", PADDING );						
+						game.bag.items.push( gear );
+						
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag._getPosX(0), 15 );
+															
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag._getPosX(0), me.game.viewport.width - (PADDING + gear.width) );
+						
+						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						equal( game.bag._getPosX(0), 15 );
+						
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						equal( game.bag._getPosX(0), 15 );
+						
+						game.bag.items.push( bell );
+						
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag._getPosX(1), 60 );
+															
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag._getPosX(1), me.game.viewport.width - (PADDING + gear.width) );
+						
+						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						equal( game.bag._getPosX(1), 60 );
+						
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						equal( game.bag._getPosX(1), 15 );
+					} );
 					
-				} );
-				
-				test( "getBounds", function( ) {
-					game.bag = null;
+					test( "_getPosY", function( ) {
+						var PADDING = 15;
+						game.bag = null;
+						me.plugin.bag.create( "top", PADDING );						
+						game.bag.items.push( gear );
+						
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag._getPosY(0), 15 );
+															
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag._getPosY(0), 15 );
+						
+						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						equal( game.bag._getPosY(0), me.game.viewport.height - (PADDING + gear.height) );
+						
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						equal( game.bag._getPosY(0), 15 );
+						
+						game.bag.items.push( bell );
+						
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag._getPosY(1), 15 );
+															
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag._getPosY(1), 60 );
+						
+						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						equal( game.bag._getPosY( 1 ), me.game.viewport.height - ( PADDING + gear.height ));
+						
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						equal( game.bag._getPosY(1), 60 );						
+					});
 					
-					me.plugin.bag.create( );
-					game.bag.padding = 10;
+					test( "_getItemPosition", function( ) {						
+						var PADDING = 15;
+						game.bag = null;
+						me.plugin.bag.create( "top", PADDING );						
+						game.bag.items.push( gear );
+						game.bag.items.push( bell );
+												
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						deepEqual( game.bag._getItemPosition(1), new me.Vector2d( 60, PADDING));
+															
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						deepEqual( game.bag._getItemPosition(1), new me.Vector2d( me.game.viewport.width - (PADDING + bell.width), 60));
+						
+						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						deepEqual( game.bag._getItemPosition(1), new me.Vector2d( 60, me.game.viewport.height - (PADDING + bell.height)));
+						
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						deepEqual( game.bag._getItemPosition(1), new me.Vector2d( PADDING, 60));							
+					} );
 					
-					game.bag.add( gear );
-					game.bag.add( bell );
-					
-					game.bag.location = game.bag._LOCATIONS[ "top" ];					
-					equal(game.bag.getBounds().pos.x, 0);
-					equal(game.bag.getBounds().pos.y, 0);
-					equal(game.bag.getBounds().width, 90);
-					equal(game.bag.getBounds().height, 50);	
-					
-					game.bag.location = game.bag._LOCATIONS[ "right" ];					
-					equal(game.bag.getBounds().pos.x, me.game.viewport.width - 50);
-					equal(game.bag.getBounds().pos.y, 0);
-					equal(game.bag.getBounds().width, 50);
-					equal(game.bag.getBounds().height, 90);	
-					
-					game.bag.location = game.bag._LOCATIONS[ "down" ];					
-					equal(game.bag.getBounds().pos.x, 0);
-					equal(game.bag.getBounds().pos.y, me.game.viewport.height - 50);
-					equal(game.bag.getBounds().width, 90);
-					equal(game.bag.getBounds().height, 50);	
-					
-					game.bag.location = game.bag._LOCATIONS[ "left" ];					
-					equal(game.bag.getBounds().pos.x, 0);
-					equal(game.bag.getBounds().pos.y, 0);
-					equal(game.bag.getBounds().width, 50);
-					equal(game.bag.getBounds().height, 90);																																			
-				} );
+					test( "add", function( ) {
+						game.bag = null;
+						me.plugin.bag.create( );
 
-				test( "destroy", function( ) {
-					me.plugin.bag.create( );
-					ok( game.bag );
+						equal( game.bag.items.length, 0 );
 
-					me.plugin.bag.destroy( );
-					equal( game.bag, null );
-				} );
+						game.bag.add( gear );
+						equal( game.bag.items.length, 1 );
+						ok( gear.floating );
+						ok( !gear.collidable );
+
+						game.bag.add( bell );
+						equal( game.bag.items.length, 2 );
+					} );
+					
+					test( "_getWidth", function( ) {
+						var PADDING = 10;
+						game.bag = null;
+						me.plugin.bag.create( "top", PADDING );
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+
+						equal( game.bag._getWidth( ), 0 );
+
+						game.bag.add( gear );
+						equal( game.bag._getWidth( ), PADDING + gear.width + PADDING );
+
+						game.bag.add( bell );
+						equal( game.bag._getWidth( ), PADDING + bell.width + PADDING + gear.width + PADDING );
+
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag._getWidth( ), PADDING + gear.width + PADDING );
+					} );
+
+					test( "_getHeight", function( ) {
+						var PADDING = 10;
+						game.bag = null;
+						me.plugin.bag.create( "right", PADDING );
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+
+						equal( game.bag._getHeight( ), 0 );
+
+						game.bag.add( gear );
+						equal( game.bag._getHeight( ), PADDING + gear.height + PADDING );
+
+						game.bag.add( bell );
+						equal( game.bag._getHeight( ), PADDING + bell.height + PADDING + gear.height + PADDING );
+
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag._getHeight( ), PADDING + gear.height + PADDING );
+					} );
+
+					test( "remove", function( ) {
+						game.bag = null;
+						me.plugin.bag.create( );
+
+						game.bag.add( gear );
+						game.bag.add( bell );
+						equal( game.bag.items.length, 2 );
+
+						game.bag.remove( gear );
+						equal( game.bag.items.length, 1 );
+						deepEqual( game.bag.items[ 0 ], bell );
+
+						game.bag.remove( bell );
+						equal( game.bag.items.length, 0 );
+
+						ok( !bell.floating );
+						ok( bell.collidable );
+
+					} );
+
+					test( "getBounds", function( ) {
+						game.bag = null;
+
+						me.plugin.bag.create( );
+						game.bag.padding = 10;
+
+						game.bag.add( gear );
+						game.bag.add( bell );
+
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag.getBounds( ).pos.x, 0 );
+						equal( game.bag.getBounds( ).pos.y, 0 );
+						equal( game.bag.getBounds( ).width, 90 );
+						equal( game.bag.getBounds( ).height, 50 );
+
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag.getBounds( ).pos.x, me.game.viewport.width - 50 );
+						equal( game.bag.getBounds( ).pos.y, 0 );
+						equal( game.bag.getBounds( ).width, 50 );
+						equal( game.bag.getBounds( ).height, 90 );
+
+						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						equal( game.bag.getBounds( ).pos.x, 0 );
+						equal( game.bag.getBounds( ).pos.y, me.game.viewport.height - 50 );
+						equal( game.bag.getBounds( ).width, 90 );
+						equal( game.bag.getBounds( ).height, 50 );
+
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						equal( game.bag.getBounds( ).pos.x, 0 );
+						equal( game.bag.getBounds( ).pos.y, 0 );
+						equal( game.bag.getBounds( ).width, 50 );
+						equal( game.bag.getBounds( ).height, 90 );
+					} );
+
+					test( "destroy", function( ) {
+						me.plugin.bag.create( );
+						ok( game.bag );
+
+						me.plugin.bag.destroy( );
+						equal( game.bag, null );
+					} );
+
+				}; //loaded
 
 			};
 			// onload

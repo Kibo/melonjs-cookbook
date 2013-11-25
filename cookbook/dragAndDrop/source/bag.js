@@ -106,31 +106,31 @@ window.game = window.game || {};
 				throw new Error( "[game.bag#add] Compulsory parameter 'item' is undefined." );
 			}
 
-			item.collidable = false;
 			item.floating = true;
+			item.collidable = false;
 
-			this._setItemPosition( item );
 			this.items.push( item );
+			var pos = this._getItemPosition( this.items.indexOf( item ) );
+			item.pos.x = pos.x;
+			item.pos.y = pos.y;
 
-			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ) );
+			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ), true );
 		},
 
 		/**
 		 * remove item from the bag
 		 * @param {me.CollectableEntity} item
 		 */
-		remove: function( item ) {					
+		remove: function( item ) {
+
 			var idx = this.items.indexOf( item );
-			if( idx != -1 ) {						
+			if( idx != -1 ) {
 				this.items.splice( idx, 1 );
 
-				item.floating = false;
 				item.collidable = true;
-			
-				// set world position
-				item.pos = me.game.viewport.localToWorld( item.pos.x, item.pos.y );
-														
+
 				me.input.releasePointerEvent( 'mousedown', item );
+				this._rearrange( );
 			}
 		},
 
@@ -148,160 +148,137 @@ window.game = window.game || {};
 		 * @return {me.Rect}
 		 */
 		getBounds: function( ) {
-			var pos = new me.Vector2d( );
-
-			switch( this.location ) {
-
-				case this._LOCATIONS["top"]:
-					pos.x = 0;
-					pos.y = 0;
-					break;
-
-				case this._LOCATIONS["right"]:
-					pos.x = me.game.viewport.width - this._getWidth( );
-					pos.y = 0;
-					break;
-
-				case this._LOCATIONS["down"]:
-					pos.x = 0;
-					pos.y = me.game.viewport.height - this._getHeight( );
-					break;
-
-				case this._LOCATIONS["left"]:
-					pos.x = 0;
-					pos.y = 0;
-					break;
-
-				default:
-					throw new Error( "[game.bag#getBounds] Unknown location: " + this.location );
-			}
-
-			return new me.Rect( pos, this._getWidth( ), this._getHeight( ) );
+			//TODO
+			// if(this.items.length == 0){
+			// return me.Rect( new me.Vector2d(0,0), 0,0);
+			// }
+			//
+			//
+			// var width = this.getPosX(  this.items.length -1 );
+			//
+			// var pos = new me.Vector2d( );
+			//
+			// switch( this.location ) {
+			//
+			// case this._LOCATIONS["top"]:
+			// pos.x = 0;
+			// pos.y = 0;
+			// break;
+			//
+			// case this._LOCATIONS["right"]:
+			// pos.x = me.game.viewport.width - this._getWidth( );
+			// pos.y = 0;
+			// break;
+			//
+			// case this._LOCATIONS["down"]:
+			// pos.x = 0;
+			// pos.y = me.game.viewport.height - this._getHeight( );
+			// break;
+			//
+			// case this._LOCATIONS["left"]:
+			// pos.x = 0;
+			// pos.y = 0;
+			// break;
+			//
+			// default:
+			// throw new Error( "[game.bag#getBounds] Unknown location: " + this.location );
+			// }
+			//
+			// return new me.Rect( pos, this._getWidth( ), this._getHeight( ) );
 		},
 
 		/**
-		 * calculate position for an item in bag
-		 * @private
-		 * @param {me.CollectableEntity} item
-		 * @return {number}
+		 * get position of item in bag
+		 * @param {number} index - index of item in bag
+		 * @return {me.Vector2d}
 		 */
-		_setItemPosition: function( item ) {
-			switch( this.location ) {
-				case this._LOCATIONS["top"]:
-
-					item.pos.x = this._getWidth( );
-					item.pos.y = this.padding;
-
-					if( this.items.length == 0 ) {
-						item.pos.x += this.padding;
-					}
-
-					break;
-
-				case this._LOCATIONS["right"]:
-
-					item.pos.x = me.game.viewport.width - ( item.width + this.padding );
-					item.pos.y = this._getHeight( );
-
-					if( this.items.length == 0 ) {
-						item.pos.y += this.padding;
-					}
-
-					break;
-
-				case this._LOCATIONS["down"]:
-
-					item.pos.x = this._getWidth( );
-					item.pos.y = me.game.viewport.height - ( item.height + this.padding );
-
-					if( this.items.length == 0 ) {
-						item.pos.x += this.padding;
-					}
-
-					break;
-
-				case this._LOCATIONS["left"]:
-
-					item.pos.x = this.padding;
-					item.pos.y = this._getHeight( );
-
-					if( this.items.length == 0 ) {
-						item.pos.y += this.padding;
-					}
-
-					break;
-
-				default:
-					throw new Error( "[game.bag#_getPosition] Unknown location: " + this.location );
-			}
+		_getItemPosition: function( index ) {
+			return new me.Vector2d( this._getPosX( index ), this._getPosY( index ) );
 		},
 
 		/**
-		 * get width of the bag
+		 * get X position of item in the bag
 		 * @private
+		 * @param {index} index - index of item in bag
 		 * @return {number}
 		 */
-		_getWidth: function( ) {
-			var size = 0;
+		_getPosX: function( index ) {
+			if( !( index >= 0 && index < this.items.length ) ) {
+				throw new Error( "[game.bag#_getPosX] Index out of bounds. Index: " + index );
+			}
+
+			var pos = 0;
 
 			if( this.location == this._LOCATIONS[ "top" ] || this.location == this._LOCATIONS[ "down" ] ) {
 
 				// calculate width of items in bag
 				for( var idx = 0; idx < this.items.length; idx++ ) {
-					size += this.items[ idx ].width;
+
+					pos += this.padding;
+
+					if( index == idx ) {
+						break;
+					}
+
+					pos += this.items[ idx ].width;
 				}
 
-				// calculate padding between items
-				if( this.items.length > 0 ) {
-					size += ( this.items.length + 1 ) * this.padding;
-				}
+			} else if( this.location == this._LOCATIONS[ "left" ] ) {
+				pos = this.padding;
 
-			} else if( this.location == this._LOCATIONS[ "left" ] || this.location == this._LOCATIONS[ "right" ] ) {
-
-				// look for the max width item
-				for( var idx = 0; idx < this.items.length; idx++ ) {
-					size = Math.max( size, this.items[ idx ].width );
-				}
-
-				// add padding for top/ down side
-				size += ( 2 * this.padding );
+			} else if( this.location == this._LOCATIONS[ "right" ] ) {
+				pos = me.game.viewport.width - ( this.items[ index ].width + this.padding );
 			}
 
-			return size;
+			return pos;
 		},
 
 		/**
-		 * get height of the bag
+		 * get Y position of item in the bag
 		 * @private
+		 * @param {index} index - index of item in bag
 		 * @return {number}
 		 */
-		_getHeight: function( ) {
-			var size = 0;
-
-			if( this.location == this._LOCATIONS[ "left" ] || this.location == this._LOCATIONS[ "right" ] ) {
-
-				// calculate height of items in bag
-				for( var idx = 0; idx < this.items.length; idx++ ) {
-					size += this.items[ idx ].height;
-				}
-
-				// calculate padding between items
-				if( this.items.length > 0 ) {
-					size += ( this.items.length + 1 ) * this.padding;
-				}
-
-			} else if( this.location == this._LOCATIONS[ "top" ] || this.location == this._LOCATIONS[ "down" ] ) {
-
-				// look for the max height item
-				for( var idx = 0; idx < this.items.length; idx++ ) {
-					size = Math.max( size, this.items[ idx ].height );
-				}
-
-				// add padding for left/ right side
-				size += ( 2 * this.padding );
+		_getPosY: function( index ) {
+			if( !( index >= 0 && index < this.items.length ) ) {
+				throw new Error( "[game.bag#_getPosY] Index out of bounds. Index: " + index );
 			}
 
-			return size;
+			var pos = 0;
+
+			if( this.location == this._LOCATIONS[ "top" ] ) {
+				pos = this.padding;
+
+			} else if( this.location == this._LOCATIONS[ "down" ] ) {
+				pos = me.game.viewport.height - ( this.padding + this.items[ index ].height );
+
+			} else if( this.location == this._LOCATIONS[ "left" ] || this.location == this._LOCATIONS[ "right" ] ) {
+
+				for( var idx = 0; idx < this.items.length; idx++ ) {
+
+					pos += this.padding;
+
+					if( index == idx ) {
+						break;
+					}
+
+					pos += this.items[ idx ].height;
+				}
+			}
+
+			return pos;
+		},
+
+		/**
+		 * rearrange items in bag
+		 * @private
+		 */
+		_rearrange: function( ) {
+			for( var i = 0; i < this.items.length; i++ ) {
+				var pos = this._getItemPosition( i );				
+				this.items[ i ].pos.x = pos.x;
+				this.items[ i ].pos.y = pos.y;
+			}
 		},
 
 		/**
@@ -314,9 +291,10 @@ window.game = window.game || {};
 			}
 
 			console.log( "register" );
+			this.floating = false;
 			this.isDragged = true;
-			me.input.registerPointerEvent( 'mousemove', me.game.viewport, game.bag._onMouseMove.bind( this ) );
-			me.input.registerPointerEvent( 'mouseup', me.game.viewport, game.bag._onMouseUp.bind( this ) );
+			me.input.registerPointerEvent( 'mousemove', me.game.viewport, game.bag._onMouseMove.bind( this ), false );
+			me.input.registerPointerEvent( 'mouseup', me.game.viewport, game.bag._onMouseUp.bind( this ), false );
 
 			e.stopPropagation( );
 			e.preventDefault( );
@@ -328,8 +306,8 @@ window.game = window.game || {};
 		 * @private
 		 */
 		_onMouseMove: function( e ) {
-			this.pos.x = e.gameScreenX;
-			this.pos.y = e.gameScreenY;
+			this.pos.x = e.gameX;
+			this.pos.y = e.gameY;
 
 			e.stopPropagation( );
 			e.preventDefault( );

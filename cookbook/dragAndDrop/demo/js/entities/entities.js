@@ -123,8 +123,7 @@ game.Artefact = me.CollectableEntity.extend( {
 		this.parent( x, y, settings );
 	},
 
-	onCollision: function( ) {
-		console.log( "collision" );
+	onCollision: function( ) {		
 		this.collidable = false;
 		game.bag.add( this );
 	}
