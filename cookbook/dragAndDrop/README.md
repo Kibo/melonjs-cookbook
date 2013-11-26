@@ -13,7 +13,7 @@ use artifact from the bag using **Drag and Drop**
 3. The player use drag and drop to pull items from the back to the game
 
 ### Screen from the demo
-![Screen](https://raw.github.com/Kibo/CraftyDialogues/master/WebContent/img/conditionalExample.png)
+![Screen](https://raw.github.com/Kibo/melonjs-cookbook/master/cookbook/dragAndDrop/demo/data/img/bag_screen.png)
 
 ###Usage
 Get resource to your index.html 
@@ -45,6 +45,9 @@ game.bag.getBounds();
 
 For more detail see [demo](https://github.com/Kibo/melonjs-cookbook/tree/756471e3a122f2adf88d92fc028938bc01b4aa1d/cookbook/dragAndDrop/demo) or [source](https://github.com/Kibo/melonjs-cookbook/blob/756471e3a122f2adf88d92fc028938bc01b4aa1d/cookbook/dragAndDrop/source/bag.js).
 
-
+###Advantage:
+- no depending on the third party library
+- documented code
+- tested code
 
 
