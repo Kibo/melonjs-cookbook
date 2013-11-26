@@ -10,7 +10,7 @@ use artifact from the bag using **Drag and Drop**
 ###How it work
 1. The Hero takes an item.
 2. The item is moved into a backpack.
-3. The player use drag and drop to pull items from the back to the game.
+3. The player use drag and drop to pull items from the back to the game or interacts an item with other entities.
 
 ### Screen from the demo
 ![Screen](https://raw.github.com/Kibo/melonjs-cookbook/master/cookbook/dragAndDrop/demo/data/img/bag_screen.png)
