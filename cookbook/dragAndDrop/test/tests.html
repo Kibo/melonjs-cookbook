@@ -55,70 +55,70 @@
 						ok( game.bag );
 					} );
 					
-					test( "_getPosX", function( ) {
+					test( "_getItemPosX", function( ) {
 						var PADDING = 15;
 						game.bag = null;
 						me.plugin.bag.create( "top", PADDING );						
 						game.bag.items.push( gear );
 						
 						game.bag.location = game.bag._LOCATIONS[ "top" ];
-						equal( game.bag._getPosX(0), 15 );
+						equal( game.bag._getItemPosX(0), 15 );
 															
 						game.bag.location = game.bag._LOCATIONS[ "right" ];
-						equal( game.bag._getPosX(0), me.game.viewport.width - (PADDING + gear.width) );
+						equal( game.bag._getItemPosX(0), me.game.viewport.width - (PADDING + gear.width) );
 						
-						game.bag.location = game.bag._LOCATIONS[ "down" ];
-						equal( game.bag._getPosX(0), 15 );
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
+						equal( game.bag._getItemPosX(0), 15 );
 						
 						game.bag.location = game.bag._LOCATIONS[ "left" ];
-						equal( game.bag._getPosX(0), 15 );
+						equal( game.bag._getItemPosX(0), 15 );
 						
 						game.bag.items.push( bell );
 						
 						game.bag.location = game.bag._LOCATIONS[ "top" ];
-						equal( game.bag._getPosX(1), 60 );
+						equal( game.bag._getItemPosX(1), 60 );
 															
 						game.bag.location = game.bag._LOCATIONS[ "right" ];
-						equal( game.bag._getPosX(1), me.game.viewport.width - (PADDING + gear.width) );
+						equal( game.bag._getItemPosX(1), me.game.viewport.width - (PADDING + gear.width) );
 						
-						game.bag.location = game.bag._LOCATIONS[ "down" ];
-						equal( game.bag._getPosX(1), 60 );
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
+						equal( game.bag._getItemPosX(1), 60 );
 						
 						game.bag.location = game.bag._LOCATIONS[ "left" ];
-						equal( game.bag._getPosX(1), 15 );
+						equal( game.bag._getItemPosX(1), 15 );
 					} );
 					
-					test( "_getPosY", function( ) {
+					test( "_getItemPosY", function( ) {
 						var PADDING = 15;
 						game.bag = null;
 						me.plugin.bag.create( "top", PADDING );						
 						game.bag.items.push( gear );
 						
 						game.bag.location = game.bag._LOCATIONS[ "top" ];
-						equal( game.bag._getPosY(0), 15 );
+						equal( game.bag._getItemPosY(0), 15 );
 															
 						game.bag.location = game.bag._LOCATIONS[ "right" ];
-						equal( game.bag._getPosY(0), 15 );
+						equal( game.bag._getItemPosY(0), 15 );
 						
-						game.bag.location = game.bag._LOCATIONS[ "down" ];
-						equal( game.bag._getPosY(0), me.game.viewport.height - (PADDING + gear.height) );
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
+						equal( game.bag._getItemPosY(0), me.game.viewport.height - (PADDING + gear.height) );
 						
 						game.bag.location = game.bag._LOCATIONS[ "left" ];
-						equal( game.bag._getPosY(0), 15 );
+						equal( game.bag._getItemPosY(0), 15 );
 						
 						game.bag.items.push( bell );
 						
 						game.bag.location = game.bag._LOCATIONS[ "top" ];
-						equal( game.bag._getPosY(1), 15 );
+						equal( game.bag._getItemPosY(1), 15 );
 															
 						game.bag.location = game.bag._LOCATIONS[ "right" ];
-						equal( game.bag._getPosY(1), 60 );
+						equal( game.bag._getItemPosY(1), 60 );
 						
-						game.bag.location = game.bag._LOCATIONS[ "down" ];
-						equal( game.bag._getPosY( 1 ), me.game.viewport.height - ( PADDING + gear.height ));
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
+						equal( game.bag._getItemPosY( 1 ), me.game.viewport.height - ( PADDING + gear.height ));
 						
 						game.bag.location = game.bag._LOCATIONS[ "left" ];
-						equal( game.bag._getPosY(1), 60 );						
+						equal( game.bag._getItemPosY(1), 60 );						
 					});
 					
 					test( "_getItemPosition", function( ) {						
@@ -134,7 +134,7 @@
 						game.bag.location = game.bag._LOCATIONS[ "right" ];
 						deepEqual( game.bag._getItemPosition(1), new me.Vector2d( me.game.viewport.width - (PADDING + bell.width), 60));
 						
-						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
 						deepEqual( game.bag._getItemPosition(1), new me.Vector2d( 60, me.game.viewport.height - (PADDING + bell.height)));
 						
 						game.bag.location = game.bag._LOCATIONS[ "left" ];
@@ -215,9 +215,33 @@
 					test( "getBounds", function( ) {
 						game.bag = null;
 
-						me.plugin.bag.create( );
+						me.plugin.bag.create();
 						game.bag.padding = 10;
+						
+						game.bag.location = game.bag._LOCATIONS[ "top" ];
+						equal( game.bag.getBounds( ).pos.x, 0 );
+						equal( game.bag.getBounds( ).pos.y, 0 );
+						equal( game.bag.getBounds( ).width, 0 );
+						equal( game.bag.getBounds( ).height, 0 );
 
+						game.bag.location = game.bag._LOCATIONS[ "right" ];
+						equal( game.bag.getBounds( ).pos.x, me.game.viewport.width);
+						equal( game.bag.getBounds( ).pos.y, 0 );
+						equal( game.bag.getBounds( ).width, 0 );
+						equal( game.bag.getBounds( ).height, 0 );
+
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
+						equal( game.bag.getBounds( ).pos.x, 0 );
+						equal( game.bag.getBounds( ).pos.y, me.game.viewport.height);
+						equal( game.bag.getBounds( ).width, 0 );
+						equal( game.bag.getBounds( ).height, 0 );
+
+						game.bag.location = game.bag._LOCATIONS[ "left" ];
+						equal( game.bag.getBounds( ).pos.x, 0 );
+						equal( game.bag.getBounds( ).pos.y, 0 );
+						equal( game.bag.getBounds( ).width, 0 );
+						equal( game.bag.getBounds( ).height, 0 );
+																																																				
 						game.bag.add( gear );
 						game.bag.add( bell );
 
@@ -233,7 +257,7 @@
 						equal( game.bag.getBounds( ).width, 50 );
 						equal( game.bag.getBounds( ).height, 90 );
 
-						game.bag.location = game.bag._LOCATIONS[ "down" ];
+						game.bag.location = game.bag._LOCATIONS[ "bottom" ];
 						equal( game.bag.getBounds( ).pos.x, 0 );
 						equal( game.bag.getBounds( ).pos.y, me.game.viewport.height - 50 );
 						equal( game.bag.getBounds( ).width, 90 );

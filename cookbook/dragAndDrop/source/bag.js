@@ -35,7 +35,7 @@ window.game = window.game || {};
 		/**
 		 * create a bag container
 		 * @public
-		 * @param {?string} location - top | right | down | left
+		 * @param {?string} location - top | right | bottom | left
 		 * @param {?number} padding - item padding in px
 		 */
 		create: function( location, padding ) {
@@ -72,7 +72,7 @@ window.game = window.game || {};
 	 * game.bag.remove( sword );
 	 */
 	var BagObject = Object.extend( {
-
+			
 		/**
 		 * locations of a bag
 		 * @private
@@ -80,19 +80,21 @@ window.game = window.game || {};
 		_LOCATIONS: {
 			top: 0,
 			right: 1,
-			down: 2,
+			bottom: 2,
 			left: 3
 		},
 
 		/**
 		 * @ignore
-		 * @param {?string} location - top | right | down | left
+		 * @param {?string} location - top | right | bottom | left
 		 * @param {?number} padding - item padding in px
 		 */
 		init: function( location, padding ) {
 			this.location = this._LOCATIONS[ location ] || this._LOCATIONS[ "top" ];
 			this.padding = padding || 0;
 			this.items = [ ];
+			
+			if(BagObject._DEBUG && window.console){console.log("[game.bag#init]");};
 		},
 
 		/**
@@ -114,7 +116,7 @@ window.game = window.game || {};
 			item.pos.x = pos.x;
 			item.pos.y = pos.y;
 
-			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ), true );
+			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ), true );					
 		},
 
 		/**
@@ -127,10 +129,11 @@ window.game = window.game || {};
 			if( idx != -1 ) {
 				this.items.splice( idx, 1 );
 
+				item.floating = false;
 				item.collidable = true;
 
 				me.input.releasePointerEvent( 'mousedown', item );
-				this._rearrange( );
+				this._arrange();						
 			}
 		},
 
@@ -139,8 +142,11 @@ window.game = window.game || {};
 		 * @ignore
 		 */
 		destroy: function( ) {
-			console.log( "[game.bag] destroy" );
-			//TODO
+			for( var idx = 0; idx < this.items.length; idx++ ) {
+				this.remove( this.items.idx );					
+			}
+			
+			if(BagObject._DEBUG && window.console){console.log("[game.bag#destroy]");};											
 		},
 
 		/**
@@ -148,43 +154,36 @@ window.game = window.game || {};
 		 * @return {me.Rect}
 		 */
 		getBounds: function( ) {
-			//TODO
-			// if(this.items.length == 0){
-			// return me.Rect( new me.Vector2d(0,0), 0,0);
-			// }
-			//
-			//
-			// var width = this.getPosX(  this.items.length -1 );
-			//
-			// var pos = new me.Vector2d( );
-			//
-			// switch( this.location ) {
-			//
-			// case this._LOCATIONS["top"]:
-			// pos.x = 0;
-			// pos.y = 0;
-			// break;
-			//
-			// case this._LOCATIONS["right"]:
-			// pos.x = me.game.viewport.width - this._getWidth( );
-			// pos.y = 0;
-			// break;
-			//
-			// case this._LOCATIONS["down"]:
-			// pos.x = 0;
-			// pos.y = me.game.viewport.height - this._getHeight( );
-			// break;
-			//
-			// case this._LOCATIONS["left"]:
-			// pos.x = 0;
-			// pos.y = 0;
-			// break;
-			//
-			// default:
-			// throw new Error( "[game.bag#getBounds] Unknown location: " + this.location );
-			// }
-			//
-			// return new me.Rect( pos, this._getWidth( ), this._getHeight( ) );
+
+			var pos = new me.Vector2d( );
+
+			switch( this.location ) {
+
+				case this._LOCATIONS["top"]:
+					pos.x = 0;
+					pos.y = 0;
+					break;
+
+				case this._LOCATIONS["right"]:
+					pos.x = me.game.viewport.width - this._getWidth( );
+					pos.y = 0;
+					break;
+
+				case this._LOCATIONS["bottom"]:
+					pos.x = 0;
+					pos.y = me.game.viewport.height - this._getHeight( );
+					break;
+
+				case this._LOCATIONS["left"]:
+					pos.x = 0;
+					pos.y = 0;
+					break;
+
+				default:
+					throw new Error( "[game.bag#getBounds] Unknown location: " + this.location );
+			}
+
+			return new me.Rect( pos, this._getWidth( ), this._getHeight( ) );
 		},
 
 		/**
@@ -193,7 +192,7 @@ window.game = window.game || {};
 		 * @return {me.Vector2d}
 		 */
 		_getItemPosition: function( index ) {
-			return new me.Vector2d( this._getPosX( index ), this._getPosY( index ) );
+			return new me.Vector2d( this._getItemPosX( index ), this._getItemPosY( index ) );
 		},
 
 		/**
@@ -202,14 +201,14 @@ window.game = window.game || {};
 		 * @param {index} index - index of item in bag
 		 * @return {number}
 		 */
-		_getPosX: function( index ) {
+		_getItemPosX: function( index ) {
 			if( !( index >= 0 && index < this.items.length ) ) {
-				throw new Error( "[game.bag#_getPosX] Index out of bounds. Index: " + index );
+				throw new Error( "[game.bag#_getItemPosX] Index out of bounds. Index: " + index );
 			}
 
 			var pos = 0;
 
-			if( this.location == this._LOCATIONS[ "top" ] || this.location == this._LOCATIONS[ "down" ] ) {
+			if( this.location == this._LOCATIONS[ "top" ] || this.location == this._LOCATIONS[ "bottom" ] ) {
 
 				// calculate width of items in bag
 				for( var idx = 0; idx < this.items.length; idx++ ) {
@@ -239,9 +238,9 @@ window.game = window.game || {};
 		 * @param {index} index - index of item in bag
 		 * @return {number}
 		 */
-		_getPosY: function( index ) {
+		_getItemPosY: function( index ) {
 			if( !( index >= 0 && index < this.items.length ) ) {
-				throw new Error( "[game.bag#_getPosY] Index out of bounds. Index: " + index );
+				throw new Error( "[game.bag#_getItemPosY] Index out of bounds. Index: " + index );
 			}
 
 			var pos = 0;
@@ -249,7 +248,7 @@ window.game = window.game || {};
 			if( this.location == this._LOCATIONS[ "top" ] ) {
 				pos = this.padding;
 
-			} else if( this.location == this._LOCATIONS[ "down" ] ) {
+			} else if( this.location == this._LOCATIONS[ "bottom" ] ) {
 				pos = me.game.viewport.height - ( this.padding + this.items[ index ].height );
 
 			} else if( this.location == this._LOCATIONS[ "left" ] || this.location == this._LOCATIONS[ "right" ] ) {
@@ -270,12 +269,85 @@ window.game = window.game || {};
 		},
 
 		/**
-		 * rearrange items in bag
+		 * calculate width of bag
+		 * @private
+		 * @return {numner}
+		 */
+		_getWidth: function( ) {
+
+			var size = 0;
+
+			if( this.location == this._LOCATIONS[ "top" ] || this.location == this._LOCATIONS[ "bottom" ] ) {
+
+				// calculate width of items in bag
+				for( var idx = 0; idx < this.items.length; idx++ ) {
+					size += this.items[ idx ].width;
+				}
+
+				// calculate padding between items
+				if( this.items.length > 0 ) {
+					size += ( this.items.length + 1 ) * this.padding;
+				}
+
+			} else if( this.location == this._LOCATIONS[ "left" ] || this.location == this._LOCATIONS[ "right" ] ) {
+
+				// look for the max width item
+				for( var idx = 0; idx < this.items.length; idx++ ) {
+					size = Math.max( size, this.items[ idx ].width );
+				}
+
+				// calculate padding between items
+				if( this.items.length > 0 ) {
+					size += ( 2 * this.padding );
+				}
+			}
+
+			return size;
+		},
+
+		/**
+		 * get height of the bag
+		 * @private
+		 * @return {number}
+		 */
+		_getHeight: function( ) {
+			var size = 0;
+
+			if( this.location == this._LOCATIONS[ "left" ] || this.location == this._LOCATIONS[ "right" ] ) {
+
+				// calculate height of items in bag
+				for( var idx = 0; idx < this.items.length; idx++ ) {
+					size += this.items[ idx ].height;
+				}
+
+				// calculate padding between items
+				if( this.items.length > 0 ) {
+					size += ( this.items.length + 1 ) * this.padding;
+				}
+
+			} else if( this.location == this._LOCATIONS[ "top" ] || this.location == this._LOCATIONS[ "bottom" ] ) {
+
+				// look for the max height item
+				for( var idx = 0; idx < this.items.length; idx++ ) {
+					size = Math.max( size, this.items[ idx ].height );
+				}
+				
+				// calculate padding between items
+				if( this.items.length > 0 ) {
+					size += ( 2 * this.padding );
+				}
+			}
+
+			return size;
+		},
+
+		/**
+		 * arrange items in bag
 		 * @private
 		 */
-		_rearrange: function( ) {
+		_arrange: function( ) {
 			for( var i = 0; i < this.items.length; i++ ) {
-				var pos = this._getItemPosition( i );				
+				var pos = this._getItemPosition( i );
 				this.items[ i ].pos.x = pos.x;
 				this.items[ i ].pos.y = pos.y;
 			}
@@ -285,16 +357,17 @@ window.game = window.game || {};
 		 * on mouse down handler
 		 * @private
 		 */
-		_onMouseDown: function( e ) {
-			if( this.isDragged ) {
-				game.bag._leave( this );
+		_onMouseDown: function( e ) {							
+			if( this._isDragged ) {
+				game.bag._leave( this );				
 			}
-
-			console.log( "register" );
+			
 			this.floating = false;
-			this.isDragged = true;
+			this._isDragged = true;
 			me.input.registerPointerEvent( 'mousemove', me.game.viewport, game.bag._onMouseMove.bind( this ), false );
 			me.input.registerPointerEvent( 'mouseup', me.game.viewport, game.bag._onMouseUp.bind( this ), false );
+			
+			if(BagObject._DEBUG && window.console){console.log("[game.bag#_onMouseDown] register");};
 
 			e.stopPropagation( );
 			e.preventDefault( );
@@ -334,11 +407,20 @@ window.game = window.game || {};
 		_leave: function( item ) {
 			me.input.releasePointerEvent( 'mousemove', me.game.viewport );
 			me.input.releasePointerEvent( 'mouseup', me.game.viewport );
-			item.isDragged = false;
+			item._isDragged = false;
 			game.bag.remove( item );
-			console.log( "unregister" );
+			
+			if(BagObject._DEBUG && window.console){console.log("[game.bag#_leave] unregister");};
 		},
 	} );
+	
+	/**
+     * Debug to window.console
+     * @constant
+     * @name _DEBUG
+     * @type {boolean}
+     */
+	BagObject._DEBUG = false;
 
 	// register plugin
 	me.plugin.register( Bag, "bag" );

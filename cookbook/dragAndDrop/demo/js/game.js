@@ -20,6 +20,7 @@ var game = {
 	if (document.location.hash === "#debug") {
 		window.onReady(function () {
 			me.plugin.register.defer(debugPanel, "debug");
+			me.debug.renderHitBox = true;
 		});
 	}
 
@@ -33,9 +34,7 @@ var game = {
 	me.loader.preload(game.resources);
 
 	// Initialize melonJS and display a loading screen.
-	me.state.change(me.state.LOADING);
-	
-	me.debug.renderHitBox = true;			
+	me.state.change(me.state.LOADING);			
 },
 
 	// Run on game resources loaded.
