@@ -7,7 +7,7 @@ A sample code to describes how to walk entity after predetermined points.
 
 ###Usage
 
-Add an point which patrol has to go through
+Add a point which a patrol has to go through
 ```
 this.patrol_addPoint( new me.Vector2d(100, 100));
 this.patrol_addPoint( new me.Vector2d(200, 100));
