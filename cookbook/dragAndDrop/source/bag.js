@@ -188,6 +188,7 @@ window.game = window.game || {};
 
 		/**
 		 * get position of item in bag
+		 * @private
 		 * @param {number} index - index of item in bag
 		 * @return {me.Vector2d}
 		 */
