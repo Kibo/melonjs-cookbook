@@ -26,4 +26,4 @@ Start the patrol
 this.patrol_walk();
 ```
 
-For more detail see [demo](#).
+For more detail see demo.

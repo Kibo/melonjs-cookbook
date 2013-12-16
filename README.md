@@ -6,7 +6,7 @@ A sample code for [the MelonJS engine](http://melonjs.org/).
 2. [Collision detection sandbox](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/collisionDetection)
 3. [Interactive dialog](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/interactiveDialog)
 4. [Drag and Drop](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/dragAndDrop)
-4. [Patrol movement](#)
+4. [Patrol movement](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/patrol)
 
 
 
