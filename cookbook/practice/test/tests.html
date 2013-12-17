@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+		<script src="../../../lib/melonJS-0.9.9-min.js"></script>
+		<script src="data.js"></script>
+		<script src="../source/practice.js"></script>
+		<script>
+			window.onload = function( ) {
+				var practice = null;
+
+				module( "module A", {
+					setup: function( ) {
+						practice = new game.Practice( DATA );
+					},
+
+					teardown: function( ) {
+						practice = null;
+					}
+				} );
+								
+				test( "shuffle", function( ) {		
+					practice.shuffle();
+					equal( practice._tasks.length, 3);		
+					notEqual( practice._tasks[0].text, "abc");	
+				});
+				
+				test( "hasTaskError", function( ) {	
+					delete practice._tasks[0].hasError;																				
+					delete practice._tasks[0].isChecked;
+					equal( practice.hasTaskError(), false );
+					
+					practice._tasks[0].hasError = true;
+					practice._tasks[0].isChecked = false;
+					equal( practice.hasTaskError(), false );
+										
+					practice._tasks[0].isChecked = true;
+					practice._tasks[0].hasError = true;
+					equal( practice.hasTaskError(), true );										
+				});
+				
+				test( "reset", function( ) {							
+					for(var idx = 0; idx < practice._tasks.length; idx++ ){
+						practice._tasks[idx].isChecked = true;
+						practice._tasks[idx].hasError = true;
+					}
+														
+					practice.reset();
+					
+					for(var idx = 0; idx < practice._tasks.length; idx++ ){
+						equal( practice._tasks[idx].isChecked, undefined);
+						equal( practice._tasks[idx].hasError, undefined);
+					}										
+				});
+			
+			};
+			// onload
+		</script>
+	</head>
+	<body>
+		<h1 id="qunit-header">MelonJS: dialog</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture">
+			test markup, will be hidden
+		</div>
+	</body>
+</html>
