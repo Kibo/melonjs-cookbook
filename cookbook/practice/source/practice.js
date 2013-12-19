@@ -8,6 +8,7 @@ window.game = window.game || {};
  * @license Dual licensed under the MIT or GPL licenses.
  *
  * @constructor
+ * @abstract
  * @example
  * myEntity.practice = new game.Practice( data );
  */
@@ -69,20 +70,18 @@ game.Practice = Object.extend( {
 	 * Show the practice
 	 * Set the DOM container CSS-class named 'show'
 	 */
-	show: function( ) {		
-		this._getDOMContainer().className = this._getDOMContainer().className.replace(/\bhide\b/,'').trim();
-		console.log( this._getDOMContainer().className );
-		
-		this._getDOMContainer().className += ' show';
+	show: function( ) {						
+		this._getDOMContainer().classList.remove('hide');
+		this._getDOMContainer().classList.add('show');
 	},
 
 	/**
 	 * Hide the practice
 	 * Set the DOM container CSS-class named 'hide'
 	 */
-	hide: function( ) {
-		this._getDOMContainer().className = this._getDOMContainer().className.replace(/\bshow\b/,'').trim();
-		this._getDOMContainer().className += ' hide';
+	hide: function( ) {			
+		this._getDOMContainer().classList.remove('show');
+		this._getDOMContainer().classList.add('hide');
 	},
 
 	/**
@@ -168,6 +167,7 @@ game.Practice = Object.extend( {
 	 * Show a task
 	 */
 	showTask: function( ) {
+		this._getDOMContainer().innerHTML = "";
 		this.drawTask( this._getDOMContainer( ), this._tasks[ this._taskIndex ] );
 	},
 
@@ -203,6 +203,7 @@ game.Practice = Object.extend( {
 
 		return container;
 	},
+	
 } );
 
 /**
@@ -212,4 +213,122 @@ game.Practice = Object.extend( {
  * @type {string}
  */
 game.Practice.DOM_CONTAINER_ID = "game-practice";
+
+/**
+ * Question practice
+ * @extends {game.Practice}
+ */
+game.QuestionPractice = game.Practice.extend({
+	
+	/**
+	* Draw a question
+ 	* @override
+ 	* @inheritDoc
+	*/
+	drawTask: function( container, task ) {
+		var wrapper = document.createElement("div");
+		
+		// Instruction
+		wrapper.innerHTML = task.text;
+		
+		// Input			
+		var textField = document.createElement("input");
+		textField.setAttribute("id", "game-practice-task");
+		textField.setAttribute("type", "text");		
+		wrapper.appendChild( textField );
+		
+		var buttonWrapper = document.createElement("div");
+		buttonWrapper.setAttribute("class", "button-wrapper");	
+		wrapper.appendChild( buttonWrapper );
+		
+		// leave button		
+		var leaveButton = document.createElement("input");
+		leaveButton.setAttribute("id", "game-practice-leave");
+		leaveButton.setAttribute("type", "button");	
+		leaveButton.setAttribute("class", "btn btn-leave");	
+		leaveButton.setAttribute("value", "Leave");
+		leaveButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", this._onLeave.bind(this), false);		
+		buttonWrapper.appendChild( leaveButton );	
+				
+		// check button		
+		var checkButton = document.createElement("input");
+		checkButton.setAttribute("id", "game-practice-check");
+		checkButton.setAttribute("type", "button");	
+		checkButton.setAttribute("class", "btn btn-check show");	
+		checkButton.setAttribute("value", "Check");
+		checkButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", this._onCheck.bind(this), false);		
+		buttonWrapper.appendChild( checkButton );
+		
+		// next button		
+		var nextButton = document.createElement("input");
+		nextButton.setAttribute("id", "game-practice-next");
+		nextButton.setAttribute("type", "button");	
+		nextButton.setAttribute("class", "btn btn-next hide");	
+		nextButton.setAttribute("value", "Next");
+		nextButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", this._onNext.bind(this), false);		
+		buttonWrapper.appendChild( nextButton );				
+		
+		container.appendChild( wrapper );
+	},
+	
+	/**
+	 * Evaluate a question 
+     * @override
+ 	 * @inheritDoc
+	 */
+	evaluateTask: function( container, task ) {
+		console.log("checke");
+		//TODO
+		return false;
+	},	
+	
+	/**
+	 * on check or next handler
+	 * @param {Object} e - event
+	 */
+	_onCheck:function(e){			
+		this._toggleButtons();
+		this.checkTask();
+	},
+	
+	/**
+	 * on leave handler
+ 	 * @param {Object} e - event
+	 */
+	_onLeave:function(e){
+		me.state.resume();		
+		this.hide();		
+	},
+	
+	/**
+	 * on next handler 
+ 	 * @param {Object} e - event
+	 */
+	_onNext:function(e){
+		this._toggleButtons();		
+	},
+	
+	/**
+	 * Toggle buttons
+	 */
+	_toggleButtons:function(){
+		var checkButton = document.getElementById("game-practice-check");
+		var nextButton = document.getElementById("game-practice-next");
+		
+		if( checkButton.classList.contains('show') ){			
+			checkButton.classList.remove('show');
+			checkButton.classList.add('hide');
+			
+			nextButton.classList.remove('hide');
+			nextButton.classList.add('show');
+						
+		}else{
+			checkButton.classList.remove('hide');
+			checkButton.classList.add('show');
+			
+			nextButton.classList.remove('show');
+			nextButton.classList.add('hide');							
+		} 				
+	},
+});
 

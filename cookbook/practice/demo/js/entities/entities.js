@@ -117,9 +117,11 @@ game.HeroEntity = game.BaseEntity.extend({
     	if (res && (res.obj.type == me.game.ENEMY_OBJECT)) {        		    		  		    		  		    	  
     		delete this._target;    		
     		this.pos.x -= res.x;
-    		this.pos.y -= res.y; 
+    		this.pos.y -= res.y;    
     		
-    		this.doTalk( res.obj );   		    		    		    		   		    		      		    		    		    			    		    				    		  
+    		me.state.pause();
+    		res.obj.practice.show();
+    		res.obj.practice.showTask();    		 		    		 		    		    		    		   		    		      		    		    		    			    		    				    	
     	}
     	    	    	    	        	    	                   	         
         // update animation if necessary
@@ -133,17 +135,7 @@ game.HeroEntity = game.BaseEntity.extend({
         // any update (e.g. position, animation)
         return false;
     }, 
-    
-    /**
-     * Start conversation
-     * @param {Object} entity
-     */
-    doTalk:function( entity ){
-    	entity.isTalking = true;
-    	this.talkWith = entity;    	
-    	entity.dialog.show();
-    },
-          
+                  
     /**
 	 * Mouse down handler
 	 * @param {Event} e - MelonJS Event Object 
@@ -205,8 +197,8 @@ game.GirlEntity = game.BaseEntity.extend({
         	}        		
 		}.bind(this), 5000);	
 		
-		// create dialog
-		this.dialog = new game.Dialog( DIALOGUES[ this.name ], this.onDialogReset.bind(this), this.onDialogShow.bind(this));					  							    	        	        
+		// create practice
+		this.practice = new game.QuestionPractice( PRACTICE_DATA );					  							    	        	        
 	},
 	
     update: function() {    	        
