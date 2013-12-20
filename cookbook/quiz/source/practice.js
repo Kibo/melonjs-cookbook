@@ -1,8 +1,8 @@
 window.game = window.game || {};
 /**
- * A task extension
+ * A quiz extension
  *
- * The extension controls a dialog with the form. Useful for entering and solving tasks in RPG games.
+ * The extension controls a quiz. Useful for entering and solving tasks in RPG games.
  *
  * @author Tomas Jurman (tomasjurman@gmail.com)
  * @license Dual licensed under the MIT or GPL licenses.
