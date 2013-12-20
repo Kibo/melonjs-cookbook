@@ -1,5 +1,5 @@
 # Quiz
-The extension controls a quiz. Useful for entering and solving tasks in RPG games.
+The extension controls a quiz. Useful for entering and solving tasks and riddles in RPG like games.
 
 **MelonJS Version**: >= 0.9.9
 

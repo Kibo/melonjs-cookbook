@@ -2,7 +2,7 @@ window.game = window.game || {};
 /**
  * A quiz extension
  *
- * The extension controls a quiz. Useful for entering and solving tasks in RPG games.
+ * The extension controls a quiz. Useful for entering and solving tasks and riddles in RPG like games.
  *
  * @author Tomas Jurman (tomasjurman@gmail.com)
  * @license Dual licensed under the MIT or GPL licenses.
