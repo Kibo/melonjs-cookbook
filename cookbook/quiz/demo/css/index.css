@@ -36,44 +36,51 @@ body {
 	-ms-interpolation-mode: nearest-neighbor;
 }
 
-#game-practice{
+#game-quiz{
 	position:absolute;
 	left:0;
 	top:0;	
 	width:100%;	
 	background:white;	
+	height:320px; /* TODO*/
+	overflow: auto;
 }
 
-#game-practice div{
-	padding:1em;
+#game-quiz div{
+	padding:0 1em;
 }
 
-#game-practice div input[type=text]{
+input#game-quiz-answer{
 	margin:0.5em 0;
 	width:100%;
 	box-sizing: border-box;	
 }
 
-#game-practice .button-wrapper{	
-	padding:0;
+input#game-quiz-answer.isCorrect{
+	background:green;
+}
+
+input#game-quiz-answer.isMistake{
+	background:red;
+}
+
+#game-quiz .button-wrapper{		
 	text-align:right;
 }
 
-#game-practice .button-wrapper .show{
+#game-quiz .button-wrapper .show{
 	display:inline;
 }
 
-#game-practice .button-wrapper .hide{
+#game-quiz .button-wrapper .hide{
 	display:none;
 }
 
-#game-practice.hide{
+#game-quiz.hide{
 	display:none;	
 }
 
-#game-practice.show{
+#game-quiz.show{
 	display:block;
 }
-
-
 

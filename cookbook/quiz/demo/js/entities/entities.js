@@ -119,9 +119,11 @@ game.HeroEntity = game.BaseEntity.extend({
     		this.pos.x -= res.x;
     		this.pos.y -= res.y;    
     		
-    		me.state.pause();
-    		res.obj.practice.show();
-    		res.obj.practice.showTask();    		 		    		 		    		    		    		   		    		      		    		    		    			    		    				    	
+    		if( !res.obj.quiz.isFinished()){
+    			me.state.pause();
+    			res.obj.quiz.show();
+    			res.obj.quiz.drawTask(); 
+    		}   		 		    		 		    		    		    		   		    		      		    		    		    			    		    				    	
     	}
     	    	    	    	        	    	                   	         
         // update animation if necessary
@@ -188,17 +190,9 @@ game.GirlEntity = game.BaseEntity.extend({
         this.minY = y;
         this.maxX = x + settings.width - settings.spritewidth;
         this.maxY = y + settings.height - settings.spriteheight;
-                                                                                                                                               
-		this.walkInterval = setInterval(function(){
-			if(!this.isTalking){
-				this._setTargetPosition( 
-        			Number(0).random(this.minX, this.maxX), 
-        			Number(0).random(this.minY, this.maxY));
-        	}        		
-		}.bind(this), 5000);	
-		
+                                                                                                                                                       			
 		// create practice
-		this.practice = new game.QuestionPractice( PRACTICE_DATA );					  							    	        	        
+		this.quiz = new game.Quiz( PRACTICE_DATA );					  							    	        	       
 	},
 	
     update: function() {    	        

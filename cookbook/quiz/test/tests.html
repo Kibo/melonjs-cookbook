@@ -14,7 +14,7 @@
 
 				module( "module A", {
 					setup: function( ) {
-						practice = new game.Practice( DATA );
+						practice = new game.Quiz( DATA );
 					},
 
 					teardown: function( ) {
@@ -58,7 +58,7 @@
 				
 				test( "_getDOMContainer", function( ) {
 					var container = practice._getDOMContainer( );
-					equal( container.getAttribute( "id" ), game.Practice.DOM_CONTAINER_ID );
+					equal( container.getAttribute( "id" ), game.Quiz.DOM_CONTAINER_ID );
 				} );
 				
 				test( "show", function( ) {
@@ -82,6 +82,34 @@
 					
 					equal( container.getAttribute( "class" ), "a b hide" );					
 				} );
+				
+				test( "hasNextTask", function( ) {									
+					practice._countOfTasks = 1;
+					practice._taskIndex = 0;					
+					equal( practice.hasNextTask(), false );
+					
+					practice._countOfTasks = 5;
+					practice._taskIndex = 0;					
+					equal( practice.hasNextTask(), true );
+					
+					practice._countOfTasks = 5;
+					practice._taskIndex = 4;					
+					equal( practice.hasNextTask(), false );												
+				} );
+				
+				test( "isFinished", function( ) {														
+					delete practice._tasks[ practice._taskIndex ].isChecked;
+					practice._countOfTasks = 1;
+					practice._taskIndex = 0;					
+					equal( practice.isFinished(), false );
+					
+					practice._tasks[ practice._taskIndex ].isChecked = true;
+					equal( practice.isFinished(), true );
+					
+														
+				} );
+				
+			
 
 			
 			};
