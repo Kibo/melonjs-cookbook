@@ -36,7 +36,7 @@ body {
 	-ms-interpolation-mode: nearest-neighbor;
 }
 
-#game-quiz{
+#quiz{
 	position:absolute;
 	left:0;
 	top:0;	
@@ -46,41 +46,41 @@ body {
 	overflow: auto;
 }
 
-#game-quiz div{
+#quiz div{
 	padding:0 1em;
 }
 
-input#game-quiz-answer{
+input#quiz-answer{
 	margin:0.5em 0;
 	width:100%;
 	box-sizing: border-box;	
 }
 
-input#game-quiz-answer.isCorrect{
+input.isCorrect, label.isCorrect{
 	background:green;
 }
 
-input#game-quiz-answer.isMistake{
+input.isMistake, label.isMistake{
 	background:red;
 }
 
-#game-quiz .button-wrapper{		
+#quiz .quiz-buttons{		
 	text-align:right;
 }
 
-#game-quiz .button-wrapper .show{
+#quiz .quiz-buttons .show{
 	display:inline;
 }
 
-#game-quiz .button-wrapper .hide{
+#quiz .quiz-buttons .hide{
 	display:none;
 }
 
-#game-quiz.hide{
+#quiz.hide{
 	display:none;	
 }
 
-#game-quiz.show{
+#quiz.show{
 	display:block;
 }
 

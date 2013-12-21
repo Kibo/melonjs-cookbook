@@ -13,6 +13,12 @@ window.game = window.game || {};
  * myEntity.quiz = new game.Quiz( data );
  */
 game.Quiz = Object.extend( {
+	
+	/**
+	 * Context
+	 * @private
+	 */
+	_that:this,
 
 	/**
 	 * All tasks
@@ -52,8 +58,8 @@ game.Quiz = Object.extend( {
 	 * Set the DOM container CSS-class named 'show'
 	 */
 	show: function( ) {						
-		this._getDOMContainer().classList.remove('hide');
-		this._getDOMContainer().classList.add('show');
+		this.getDOMContainer().classList.remove('hide');
+		this.getDOMContainer().classList.add('show');
 	},
 
 	/**
@@ -61,8 +67,8 @@ game.Quiz = Object.extend( {
 	 * Set the DOM container CSS-class named 'hide'
 	 */
 	hide: function( ) {			
-		this._getDOMContainer().classList.remove('show');
-		this._getDOMContainer().classList.add('hide');
+		this.getDOMContainer().classList.remove('show');
+		this.getDOMContainer().classList.add('hide');
 	},
 
 	/**
@@ -135,54 +141,46 @@ game.Quiz = Object.extend( {
 		}
 
 		// clean container
-		this._getDOMContainer().innerHTML = "";
+		this.getDOMContainer().innerHTML = "";
 		
-		var taskObj;		
-		switch( this._tasks[ this._taskIndex ].type ){
-			case "question":
-				taskObj = new game.QuestionTask( this );
-				taskObj.draw();
-				break;
-			
-			case "choice":
-				// TODO
-				break;
-			
-			default:
-				throw new Error("Unknown task type: " + this._tasks[ this._taskIndex ].type );
+		// create a task object					
+		this._taskObj = new window.game[ this._tasks[ this._taskIndex ].type ];
+		if( !this._taskObj ){
+			throw new Error("Unknown task type: " + this._tasks[ this._taskIndex ].type );	
 		}
+		this._taskObj.draw( this );
 				
 		var buttonWrapper = document.createElement("div");
-		buttonWrapper.setAttribute("class", "button-wrapper");	
+		buttonWrapper.setAttribute("class", game.Quiz.DOM_BUTTONS_CLASS);	
 		
 		// leave button		
 		var leaveButton = document.createElement("input");
-		leaveButton.setAttribute("id", "game-quiz-leave");
+		leaveButton.setAttribute("id", game.Quiz.DOM_LEAVE_BUTTON_ID);
 		leaveButton.setAttribute("type", "button");	
 		leaveButton.setAttribute("class", "btn btn-leave");	
 		leaveButton.setAttribute("value", "Leave");
-		leaveButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", taskObj._onLeave.bind( taskObj ), false);		
+		leaveButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", this._onLeave.bind( this ), false);		
 		buttonWrapper.appendChild( leaveButton );	
 
 		// check button		
 		var checkButton = document.createElement("input");
-		checkButton.setAttribute("id", "game-quiz-check");
+		checkButton.setAttribute("id", game.Quiz.DOM_CHECK_BUTTON_ID);
 		checkButton.setAttribute("type", "button");	
 		checkButton.setAttribute("class", "btn btn-check show");	
 		checkButton.setAttribute("value", "Check");
-		checkButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", taskObj._onCheck.bind( taskObj ), false);		
+		checkButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", this._onCheck.bind( this ), false);		
 		buttonWrapper.appendChild( checkButton );
 
 		// next button		
 		var nextButton = document.createElement("input");
-		nextButton.setAttribute("id", "game-quiz-next");
+		nextButton.setAttribute("id", game.Quiz.DOM_NEXT_BUTTON_ID);
 		nextButton.setAttribute("type", "button");	
 		nextButton.setAttribute("class", "btn btn-next hide");	
 		nextButton.setAttribute("value", "Next");
-		nextButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", taskObj._onNext.bind( taskObj ), false);		
+		nextButton.addEventListener( me.device.touch ? "touchstart" : "mousedown", this._onNext.bind( this ), false);		
 		buttonWrapper.appendChild( nextButton );
 		
-		this._getDOMContainer().appendChild( buttonWrapper );
+		this.getDOMContainer().appendChild( buttonWrapper );
 	},
 	
 	/**
@@ -190,7 +188,7 @@ game.Quiz = Object.extend( {
 	 */
 	drawAnswers:function(){		
 		var answersWrapper = document.createElement("div");	
-		answersWrapper.setAttribute("class", "answer-wrapper");	
+		answersWrapper.setAttribute("class", game.Quiz.DOM_ANSWERS_CLASS);	
 		
 		var htmlAnswers = '<label>The correct answer:</label>';
 
@@ -202,7 +200,7 @@ game.Quiz = Object.extend( {
 
 		answersWrapper.innerHTML = htmlAnswers ;
 		
-		this._getDOMContainer().appendChild( answersWrapper );
+		this.getDOMContainer().appendChild( answersWrapper );
 	},
 
 	/**
@@ -223,10 +221,9 @@ game.Quiz = Object.extend( {
 
 	/**
 	 * Get a root DOM container
-	 * If container not exists creates it
-	 * @private
+	 * If container not exists creates it	
 	 */
-	_getDOMContainer: function( ) {
+	getDOMContainer: function( ) {
 		var container = document.getElementById( game.Quiz.DOM_CONTAINER_ID );
 
 		if( !container ) {		
@@ -242,8 +239,8 @@ game.Quiz = Object.extend( {
 	 * Toggle buttons
 	 */
 	_toggleButtons:function(){
-		var checkButton = document.getElementById("game-quiz-check");
-		var nextButton = document.getElementById("game-quiz-next");
+		var checkButton = document.getElementById( game.Quiz.DOM_CHECK_BUTTON_ID );
+		var nextButton = document.getElementById( game.Quiz.DOM_NEXT_BUTTON_ID );
 
 		if( checkButton.classList.contains('show') ){			
 			checkButton.classList.remove('show');
@@ -260,85 +257,21 @@ game.Quiz = Object.extend( {
 			nextButton.classList.add('hide');							
 		} 				
 	},
-
-} );
-
-/**
- * id for DOM container
- * @constant
- * @name DOM_CONTAINER_ID
- * @type {string}
- */
-game.Quiz.DOM_CONTAINER_ID = "game-quiz";
-
-/* ###################################################### */
-
-/**
- * Question quiz
- */
-game.QuestionTask = Object.extend({
-
-	/**
-	 * @constructor
-	 * @param {Object} quiz
-	 */
-	init: function( quiz ) {
-		this._quiz = quiz;
-		this._container = this._quiz._getDOMContainer();		
-		this._task = this._quiz._tasks[ this._quiz._taskIndex ];
-	},
-
-	/**
-	 * Draw a question	
-	 */
-	draw: function() {						
-		var wrapper = document.createElement("div");
-
-		// Instruction
-		wrapper.innerHTML = this._task.text;
-
-		// Input			
-		var textField = document.createElement("input");
-		textField.setAttribute("id", "game-quiz-answer");
-		textField.setAttribute("type", "text");		
-		wrapper.appendChild( textField );
-						
-		this._container.appendChild( wrapper );
-	},
-
-	/**
-	 * Evaluate a question
-	 * @return {boolean} isCorrect 
-	 */
-	evaluate: function() {			
-		var answerElement = document.getElementById("game-quiz-answer");
-		var answerValue = answerElement.value.trim();
-
-		for( var idx = 0; idx < this._task.answers.length; idx++ ){
-			if( this._task.answers[idx] == answerValue ){
-				answerElement.classList.add('isCorrect');
-				return true;
-			}
-		}
-
-		answerElement.classList.add('isMistake');									
-		return false;
-	},	
-
+	
 	/**
 	 * on check handler	
 	 */
 	_onCheck:function(){					
-		this._task.isChecked = true;
+		this._tasks[ this._taskIndex ].isChecked = true;
 		
-		if( !this.evaluate() ){
-			this._task.hasError = false;			
-			this._quiz.drawAnswers();
+		if( !this._taskObj.evaluate( this ) ){
+			this._tasks[ this._taskIndex ].hasError = false;			
+			this.drawAnswers();
 		}
 				
-		this._quiz._toggleButtons();
-		if( !this._quiz.hasNextTask() ){
-			var nextButton = document.getElementById("game-quiz-next");
+		this._toggleButtons();
+		if( !this.hasNextTask() ){
+			var nextButton = document.getElementById(game.Quiz.DOM_NEXT_BUTTON_ID);
 			nextButton.value="Finish";	
 		}
 	},
@@ -348,22 +281,204 @@ game.QuestionTask = Object.extend({
 	 */
 	_onLeave:function(){
 		me.state.resume();		
-		this._quiz.hide();		
+		this.hide();		
 	},
 
 	/**
 	 * on next handler 
 	 */
 	_onNext:function(){
-		this._quiz._toggleButtons();
+		this._toggleButtons();
 
-		if( this._quiz.hasNextTask()){
-			this._quiz.nextTask();
+		if( this.hasNextTask()){
+			this.nextTask();
 		}else{			
 			this._onLeave();	
 		}
 
-		this._quiz.drawTask();	
+		this.drawTask();	
 	},
+
+} );
+
+/**
+ * id for DOM container
+ * @constant
+ * @name DOM_CONTAINER_ID
+ * @type {string}
+ */
+game.Quiz.DOM_CONTAINER_ID = "quiz";
+
+/**
+ * id for DOM check button
+ * @constant
+ * @name DOM_CHECK_BUTTON_ID
+ * @type {string}
+ */
+game.Quiz.DOM_CHECK_BUTTON_ID = "quiz-check-btn";
+
+/**
+ * id for DOM leave button
+ * @constant
+ * @name DOM_LEAVE_BUTTON_ID
+ * @type {string}
+ */
+game.Quiz.DOM_LEAVE_BUTTON_ID = "quiz-leave-btn";
+
+/**
+ * id for DOM next button
+ * @constant
+ * @name DOM_NEXT_BUTTON_ID
+ * @type {string}
+ */
+game.Quiz.DOM_NEXT_BUTTON_ID = "quiz-next-btn";
+
+/**
+ * class for content
+ * @constant
+ * @name DOM_CONTENT_CLASS
+ * @type {string}
+ */
+game.Quiz.DOM_CONTENT_CLASS = "quiz-content";
+
+/**
+ * class for answers
+ * @constant
+ * @name DOM_ANSTWERS_CLASS
+ * @type {string}
+ */
+game.Quiz.DOM_ANSWERS_CLASS = "quiz-answers";
+
+/**
+ * class for buttons
+ * @constant
+ * @name DOM_BUTTONS_CLASS
+ * @type {string}
+ */
+game.Quiz.DOM_BUTTONS_CLASS = "quiz-buttons";
+
+/* ###################################################### */
+
+/**
+ * Question
+ */
+game.Question = Object.extend({
+	
+	/**
+	 * Draw a task	
+	 * @param {game.Quiz} quiz	
+	 */
+	draw: function( quiz ) {						
+		var wrapper = document.createElement("div");
+		wrapper.setAttribute("class", game.Quiz.DOM_CONTENT_CLASS + " quiz-question");
+
+		// Instruction
+		wrapper.innerHTML = quiz._tasks[ quiz._taskIndex ].text;
+
+		// Input			
+		var textField = document.createElement("input");
+		textField.setAttribute("id", game.Question.DOM_ANSWER_INPUT_ID );
+		textField.setAttribute("type", "text");		
+		wrapper.appendChild( textField );
+						
+		quiz.getDOMContainer().appendChild( wrapper );
+	},
+
+	/**
+	 * Evaluate a question
+	 * @param {game.Quiz} quiz
+	 * @return {boolean} isCorrect 
+	 */
+	evaluate: function( quiz ) {			
+		var answerElement = document.getElementById( game.Question.DOM_ANSWER_INPUT_ID );
+		var answerValue = answerElement.value.trim();
+
+		for( var idx = 0; idx < quiz._tasks[ quiz._taskIndex ].answers.length; idx++ ){
+			if( quiz._tasks[ quiz._taskIndex ].answers[idx] == answerValue ){
+				answerElement.classList.add('isCorrect');
+				return true;
+			}
+		}
+
+		answerElement.classList.add('isMistake');									
+		return false;
+	},	
 });
 
+/**
+ * id for DOM input for answer 
+ * @constant
+ * @name DOM_ANSWER_INPUT_ID
+ * @type {string}
+ */
+game.Question.DOM_ANSWER_INPUT_ID = "quiz-answer";
+
+/* ###################################################### */
+
+/**
+ * Choice
+ */
+game.Choice = Object.extend({
+	
+	/**
+	 * Draw a task	
+	 * @param {Object} quiz	
+	 */
+	draw: function( quiz ) {						
+		var wrapper = document.createElement("div");
+		wrapper.setAttribute("class", game.Quiz.DOM_CONTENT_CLASS + " quiz-choice");
+
+		// Instruction
+		wrapper.innerHTML = quiz._tasks[ quiz._taskIndex ].text;
+		
+		var list = document.createElement("ul");
+		for(var idx = 0; idx < quiz._tasks[ quiz._taskIndex ].choices.length; idx++){			
+			var item = document.createElement("li");
+			var label = document.createElement("label");						
+				var radio = document.createElement("input");
+				radio.setAttribute("type", "radio");	
+				radio.setAttribute("name", game.Choice.DOM_ANSWER_INPUT_CLASS);	
+				radio.setAttribute("class", game.Choice.DOM_ANSWER_INPUT_CLASS);
+				radio.setAttribute("value", quiz._tasks[ quiz._taskIndex ].choices[idx]);	
+			label.appendChild( radio );
+			label.appendChild( document.createTextNode( quiz._tasks[ quiz._taskIndex ].choices[idx] ) );
+			item.appendChild( label );
+			list.appendChild( item );		
+		}
+		
+		wrapper.appendChild( list );							
+		quiz.getDOMContainer().appendChild( wrapper );
+	},	
+	
+	/**
+	 * Evaluate a question
+	 * @param {game.Quiz} quiz
+	 * @return {boolean} isCorrect 
+	 */
+	evaluate: function( quiz ) {
+		
+		var radios = document.querySelectorAll("." + game.Choice.DOM_ANSWER_INPUT_CLASS);
+		for(var idx = 0; idx < radios.length; idx++ ){
+			if(radios[idx].type === 'radio' && radios[idx].checked){
+											
+				if( quiz._tasks[ quiz._taskIndex ].answers.indexOf( radios[idx].value )  == -1 ){
+					radios[idx].parentNode.classList.add('isMistake');
+					return false;								
+				}else{
+					radios[idx].parentNode.classList.add('isCorrect');
+					return true;
+				}										
+			}			
+		}
+													
+		return false;
+	}
+});
+
+/**
+ * Class for answer input 
+ * @constant
+ * @name DOM_ANSWER_INPUT_CLASS
+ * @type {string}
+ */
+game.Choice.DOM_ANSWER_INPUT_CLASS = "quiz-answer";
