@@ -56,14 +56,14 @@
 					}										
 				});
 				
-				test( "_getDOMContainer", function( ) {
-					var container = practice._getDOMContainer( );
+				test( "getDOMContainer", function( ) {
+					var container = practice.getDOMContainer( );
 					equal( container.getAttribute( "id" ), game.Quiz.DOM_CONTAINER_ID );
 				} );
 				
 				test( "show", function( ) {
 					var classNames = "a b hide";
-					var container = practice._getDOMContainer( );
+					var container = practice.getDOMContainer( );
 					container.setAttribute( "class", classNames );
 					equal( container.getAttribute( "class" ), classNames );
 					
@@ -74,7 +74,7 @@
 				
 				test( "hide", function( ) {
 					var classNames = "a b show";
-					var container = practice._getDOMContainer( );
+					var container = practice.getDOMContainer( );
 					container.setAttribute( "class", classNames );
 					equal( container.getAttribute( "class" ), classNames );
 					
