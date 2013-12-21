@@ -31,7 +31,7 @@ Create new quiz
 witch.quiz = new game.Quiz( data );
 ```
 
-Would you like to implement a custom task type? Implements two methods:
+Would you like to implement a custom task type?
 ```
 game.MyCustomType = Object.extend({
 
