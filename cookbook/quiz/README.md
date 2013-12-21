@@ -44,7 +44,7 @@ game.MyCustomType = Object.extend({
 	},
 	
 	/**
-	 * Evaluate a question
+	 * Evaluate a task
 	 * @param {game.Quiz} quiz
 	 * @return {boolean} isCorrect 
 	 */
