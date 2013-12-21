@@ -20,9 +20,9 @@ Get resource to your index.html
 Create a data for tasks
 ```
 [
-	{ type:"question", text:"<h3>Answer a question</h3><label>Write the name of the most powerful wizard:</label>", answers:["Merlin", "Gandalf"] },
-	{ type:"question", text:"<h3>Answer a question</h3><label>Write the name of the forgotten kingdom.</label>", answers:["Middle-earth", "Middleearth", "Middle earth"] },
-	{ type:"question", text:"<h3>Answer a question</h3><label>Write the name of a magic sword.</label>", answers:["Kal"] }
+	{ type:"Question", text:"<h3>Answer a question</h3><label>Write the name of the most powerful wizard:</label>", answers:["Merlin", "Gandalf"] },	
+	{ type:"Choice", text:"<h3>Answer a question</h3><label>Choose the name of the forgotten kingdom.</label>", choices:["Middle-earth", "Nubia", "The Czech Republic"], answers:["Nubia"] },	
+	{ type:"Question", text:"<h3>Answer a question</h3><label>Write the name of a magic sword.</label>", answers:["Kal"] }
 ]
 ```
 
