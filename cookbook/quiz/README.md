@@ -3,7 +3,7 @@ The extension controls a quiz. Useful for entering and solving tasks and riddles
 
 **MelonJS Version**: >= 0.9.9
 
-**Status**: under construction
+**Status**: finished
 
 ###Type of task:
 - question
@@ -40,7 +40,7 @@ game.MyCustomType = Object.extend({
 	 * @param {Object} quiz	
 	 */
 	draw: function( quiz ) {
-		// TODO - implement it
+		// TODO - implement me
 	},
 	
 	/**
@@ -49,7 +49,7 @@ game.MyCustomType = Object.extend({
 	 * @return {boolean} isCorrect 
 	 */
 	evaluate: function( quiz ) {
-		// TODO - implement it
+		// TODO - implement me
 	}
 });
 ```

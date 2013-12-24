@@ -43,7 +43,7 @@ window.game = window.game || {};
 				game.bag = new BagObject( location, padding );
 			}
 		},
-
+				
 		/**
 		 * remove the bag container from a game
 		 * @public
@@ -94,7 +94,7 @@ window.game = window.game || {};
 			this.padding = padding || 0;
 			this.items = [ ];
 			
-			if(BagObject._DEBUG && window.console){console.log("[game.bag#init]");};
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#init]");};
 		},
 
 		/**
@@ -110,6 +110,7 @@ window.game = window.game || {};
 
 			item.floating = true;
 			item.collidable = false;
+			item.isPersistent = true;
 
 			this.items.push( item );
 			var pos = this._getItemPosition( this.items.indexOf( item ) );
@@ -130,10 +131,22 @@ window.game = window.game || {};
 				this.items.splice( idx, 1 );
 
 				item.floating = false;
-				item.collidable = true;
+				item.collidable = true;	
+				item.isPersistent = false;			
 
 				me.input.releasePointerEvent( 'mousedown', item );
 				this._arrange();						
+			}
+		},
+		
+		/**
+		 * reset items in bag
+		 * recreate events, it is usefull when player goes to next level
+		 */
+		reset: function(){
+			for( var idx = 0; idx < this.items.length; idx++ ) {					
+				me.input.releasePointerEvent( 'mousedown', this.items[idx]);
+				me.input.registerPointerEvent( 'mousedown', this.items[idx], this._onMouseDown.bind( this.items[idx] ), true );
 			}
 		},
 
@@ -146,7 +159,7 @@ window.game = window.game || {};
 				this.remove( this.items.idx );					
 			}
 			
-			if(BagObject._DEBUG && window.console){console.log("[game.bag#destroy]");};											
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#destroy]");};											
 		},
 
 		/**
@@ -362,16 +375,15 @@ window.game = window.game || {};
 			if( this._isDragged ) {
 				game.bag._leave( this );				
 			}
-			
-			this.floating = false;
+									
 			this._isDragged = true;
 			me.input.registerPointerEvent( 'mousemove', me.game.viewport, game.bag._onMouseMove.bind( this ), false );
 			me.input.registerPointerEvent( 'mouseup', me.game.viewport, game.bag._onMouseUp.bind( this ), false );
 			
-			if(BagObject._DEBUG && window.console){console.log("[game.bag#_onMouseDown] register");};
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#_onMouseDown] register events");};			
 
 			e.stopPropagation( );
-			e.preventDefault( );
+			e.preventDefault( );							
 			return false;
 		},
 
@@ -380,11 +392,17 @@ window.game = window.game || {};
 		 * @private
 		 */
 		_onMouseMove: function( e ) {
+			this.floating = false;
+			this.isMoving = true;
+			
 			this.pos.x = e.gameX;
 			this.pos.y = e.gameY;
 
 			e.stopPropagation( );
 			e.preventDefault( );
+			
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#_onMouseMove] move");};
+			
 			return false;
 		},
 
@@ -392,11 +410,14 @@ window.game = window.game || {};
 		 * on mouse up handler
 		 * @private
 		 */
-		_onMouseUp: function( e ) {
+		_onMouseUp: function( e ) {	
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#_onMouseUp] mouseUp");};
+							
 			game.bag._leave( this );
 
 			e.stopPropagation( );
 			e.preventDefault( );
+								
 			return false;
 		},
 
@@ -408,10 +429,16 @@ window.game = window.game || {};
 		_leave: function( item ) {
 			me.input.releasePointerEvent( 'mousemove', me.game.viewport );
 			me.input.releasePointerEvent( 'mouseup', me.game.viewport );
-			item._isDragged = false;
-			game.bag.remove( item );
 			
-			if(BagObject._DEBUG && window.console){console.log("[game.bag#_leave] unregister");};
+			if(BagObject._DEBUG && window.console){ window.console.log("[game.bag#_leave] unregister events");};
+						
+			if( item.isMoving ){
+				if(BagObject._DEBUG && window.console){ window.console.log("[game.bag#_leave] remove from bag.");};
+								
+				delete item.isMoving;				
+				item._isDragged = false;
+				game.bag.remove( item );						
+			}									
 		},
 	} );
 	

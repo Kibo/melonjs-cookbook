@@ -1,0 +1,93 @@
+body {
+	background-color: #000;
+	color: #fff;
+
+	/* Allow mouse dragging. */
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	
+	/* disable touch panning/zooming */
+	-ms-touch-action: none;
+	touch-action: none;
+
+	/* Allow canvas to hit the edges of the browser viewport. */
+	margin: 0;
+}
+
+#screen{
+	position:relative;
+	width:480px;
+}
+
+#screen canvas {
+	margin: auto;
+
+	/* Hide the gap for font descenders. */
+	display: block;
+	
+	/* disable scaling interpolation */
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -o-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: optimize-contrast;
+	-ms-interpolation-mode: nearest-neighbor;
+}
+
+#game-dialog{
+	position:absolute;
+	left:0;
+	bottom:0;	
+	width:100%;	
+}
+
+#game-dialog .dialog{
+	background:white;
+	min-height:50px;
+	border-top:1px solid #333;	
+}
+
+#game-dialog .dialog:before {   
+   content:"";
+   background:transparent url(../data/img/faces.png) no-repeat 0 0;
+   width: 50px;
+   height: 50px;
+   display:block;
+   float:left;
+   margin-right:0.5em;
+}
+
+#game-dialog .dialog p{
+	margin:0;
+	padding:1em;
+	color:#333;		
+	cursor:pointer;		
+}
+
+#game-dialog .choice p{
+	margin-left:60px;
+	padding:0;		
+}
+
+#game-dialog .choice p:first-child{
+	padding-top:0.5em;		
+}
+
+#game-dialog .choice p:last-child{
+	padding-bottom:0.5em;		
+}
+
+#game-dialog .hero:before {
+	background-position:0 0;
+}
+
+#game-dialog .girl:before {
+	background-position:0 -50px;	
+}
+
+#game-dialog .choice:before {
+	background-position:0 -100px;	
+}
