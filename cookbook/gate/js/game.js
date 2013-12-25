@@ -3,8 +3,23 @@ var game = {
 		
 	// an object where to store game information
 	data : {
-		// score
-		score : 0,		
+			
+		/*
+		 * Last level name
+		 * @see game.PlayScreen#mapSetting
+		 */	
+		lastLevelName:null,	
+			
+		/*
+		 * Object for store artefacts location
+		 * key: {string} level name
+		 * value: {array<Object>} artefacts
+		 */	
+		artefactsLocations:{
+			part1:[{name:"camera", x:100, y:50},
+			  	   {name:"gear", x:100, y:100}],
+			part2:[{name:"bell", x:100, y:200}],					
+		}		
 	},
 		
 	// Run on page load.

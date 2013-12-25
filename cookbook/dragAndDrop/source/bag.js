@@ -94,6 +94,8 @@ window.game = window.game || {};
 			this.padding = padding || 0;
 			this.items = [ ];
 			
+			me.event.subscribe(me.event.LEVEL_LOADED, this._reset);
+			
 			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#init]");};
 		},
 
@@ -102,6 +104,7 @@ window.game = window.game || {};
 		 * @param {me.CollectableEntity} item
 		 * @param {?number} x - y position on viewport
 		 * @param {?number} y - y position on viewport
+		 * @fires game.bag#onAddItem
 		 */
 		add: function( item, x, y ) {
 			if( !item ) {
@@ -117,12 +120,21 @@ window.game = window.game || {};
 			item.pos.x = pos.x;
 			item.pos.y = pos.y;
 
-			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ), true );					
+			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ), true );
+			
+			/**
+			 * onAddItem event				
+			 * @event game.bag#onAddItem
+			 * @type {Array}
+			 * @property {Object} item
+			 */
+			me.event.publish(BagObject.ADD_ITEM_CHANNEL_NAME, [item]);					
 		},
 
 		/**
 		 * remove item from the bag
 		 * @param {me.CollectableEntity} item
+		 * @fires game.bag#onRemoveItem
 		 */
 		remove: function( item ) {
 
@@ -135,21 +147,18 @@ window.game = window.game || {};
 				item.isPersistent = false;			
 
 				me.input.releasePointerEvent( 'mousedown', item );
-				this._arrange();						
-			}
+				this._arrange();
+								
+				/**
+				 * onRemoveItem event				
+				 * @event game.bag#onRemoveItem
+				 * @type {Array}
+				 * @property {Object} item
+				 */
+				me.event.publish(BagObject.REMOVE_ITEM_CHANNEL_NAME, [item]);							
+			}								
 		},
-		
-		/**
-		 * reset items in bag
-		 * recreate events, it is usefull when player goes to next level
-		 */
-		reset: function(){
-			for( var idx = 0; idx < this.items.length; idx++ ) {					
-				me.input.releasePointerEvent( 'mousedown', this.items[idx]);
-				me.input.registerPointerEvent( 'mousedown', this.items[idx], this._onMouseDown.bind( this.items[idx] ), true );
-			}
-		},
-
+				
 		/**
 		 * Destroy function
 		 * @ignore
@@ -158,6 +167,8 @@ window.game = window.game || {};
 			for( var idx = 0; idx < this.items.length; idx++ ) {
 				this.remove( this.items.idx );					
 			}
+								
+			me.event.unsubscribe( me.event.LEVEL_LOADED, this._reset );
 			
 			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#destroy]");};											
 		},
@@ -366,6 +377,20 @@ window.game = window.game || {};
 				this.items[ i ].pos.y = pos.y;
 			}
 		},
+		
+		/**
+		 * reset events in bag
+		 * recreate events, when player goes to the next level
+		 * @private
+		 */
+		_reset: function(){										
+			for( var idx = 0; idx < game.bag.items.length; idx++ ) {								
+				me.input.releasePointerEvent( 'mousedown', game.bag.items[idx]);				
+				me.input.registerPointerEvent( 'mousedown', game.bag.items[idx], game.bag._onMouseDown.bind( game.bag.items[idx] ), true );
+			}
+						
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#_reset] recreate events of item in bag.");};
+		},
 
 		/**
 		 * on mouse down handler
@@ -441,6 +466,22 @@ window.game = window.game || {};
 			}									
 		},
 	} );
+	
+	/**
+     * Channel Constant for when a item is added    
+     * @constant
+     * @name ADD_ITEM_CHANNEL_NAME
+     * @type {string}
+     */
+	BagObject.ADD_ITEM_CHANNEL_NAME = "game.bag.onAddItem";
+	
+	/**
+     * Channel Constant for when a item is remove   
+     * @constant
+     * @name REMOVE_ITEM_CHANNEL_NAME
+     * @type {string}
+     */
+	BagObject.REMOVE_ITEM_CHANNEL_NAME = "game.bag.onRemoveItem";
 	
 	/**
      * Debug to window.console

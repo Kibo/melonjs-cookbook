@@ -1,15 +1,11 @@
 game.PlayScreen = me.ScreenObject.extend({
 				
 	init:function(){		
-		
-		this.artefactsLocations = {
-			part1:[{name:"camera", x:100, y:50},
-			  	   {name:"gear", x:100, y:100}],
-			part2:[{name:"bell", x:100, y:200}],					
-		};
-		
-		me.plugin.bag.create("right", 5 );	
-		
+			
+		me.plugin.bag.create("right", 5 );			
+		me.event.subscribe( "game.bag.onAddItem", this._onAddItem);		
+		me.event.subscribe( "game.bag.onRemoveItem", this._onRemoveItem);
+					
 		// change the default sort property	
 		me.game.world.sortOn = "y";											
 	},
@@ -21,7 +17,7 @@ game.PlayScreen = me.ScreenObject.extend({
 		me.levelDirector.loadLevel("part1");	
 													
 		me.game.onLevelLoaded = this.onLevelLoadedHandler.bind(this);	
-		game.data._levelName = me.levelDirector.getCurrentLevelId();
+		game.data.lastLevelName = me.levelDirector.getCurrentLevelId();
 		
 		this.placeArtefacts();					
 	},
@@ -31,8 +27,7 @@ game.PlayScreen = me.ScreenObject.extend({
 	 */
 	onLevelLoadedHandler: function(e){
 		this.mapSetting();	
-		this.placeArtefacts();			
-		game.bag.reset();                		        
+		this.placeArtefacts();		              		       
 	},
 	
 	/**
@@ -43,29 +38,61 @@ game.PlayScreen = me.ScreenObject.extend({
 		var doorInList = me.game.world.getEntityByProp("name", "doorIn");
 																			
 		for(var i = 0; i < doorInList.length; i++){
-			if( game.data._levelName == doorInList[i].from ){
+			if( game.data.lastLevelName == doorInList[i].from ){
 				heroList[0].pos.x = doorInList[i].pos.x;
         		heroList[0].pos.y = doorInList[i].pos.y;	
         		break;
 			}			
 		}	
 		
-		game.data._levelName = me.levelDirector.getCurrentLevelId();				
+		game.data.lastLevelName = me.levelDirector.getCurrentLevelId();				
 	},
 
 	/**	
 	 *  action to perform when leaving this screen (state change)
 	 */
-	onDestroyEvent: function() {		
+	onDestroyEvent: function() {
+		me.event.unsubscribe( "game.bag.onAddItem", this._onAddItem);		
+		me.event.unsubscribe( "game.bag.onRemoveItem", this._onRemoveItem);			
 	},
 	
+	/**
+	 * Place artefacts to level
+	 */
 	placeArtefacts:function(){
-		var artefacts = this.artefactsLocations[me.levelDirector.getCurrentLevelId()];
+		var artefacts = game.data.artefactsLocations[me.levelDirector.getCurrentLevelId()];
 					
 		for( var idx = 0; idx < artefacts.length; idx++ ){
-			var artefact = me.entityPool.newInstanceOf( artefacts[idx].name, artefacts[idx].x, artefacts[idx].y, {} );
+			var artefact = me.entityPool.newInstanceOf( artefacts[idx].name, artefacts[idx].x, artefacts[idx].y, {name:artefacts[idx].name} );
 			artefact.renderable.setCurrentAnimation( artefacts[idx].name );	
 			me.game.add( artefact , 10);
 		}							
+	},
+	
+	/**
+	 * Remove item from array
+	 * @see game.data.artefactsLocations 
+	 * @private
+ 	 * @param {Object} item
+	 */
+	_onAddItem:function( item ){		
+		var artefacts = game.data.artefactsLocations[ me.levelDirector.getCurrentLevelId() ];				
+		for( var idx = 0; idx < artefacts.length; idx++ ){
+			if(item.name == artefacts[idx].name){
+				artefacts.splice(idx, 1);				
+				break;
+			}
+		}				
+	},
+	
+	/**
+	 * Add item to array
+	 * @see game.data.artefactsLocations 
+	 * @private
+ 	 * @param {Object} item
+	 */
+	_onRemoveItem:function(item){
+		var artefacts = game.data.artefactsLocations[ me.levelDirector.getCurrentLevelId() ];
+		artefacts.push( {name:item.name, x:item.pos.x, y:item.pos.y } );		
 	},
 });
