@@ -25,6 +25,7 @@
  </objectgroup>
  <objectgroup name="entities" width="20" height="20">
   <object name="hero" x="320" y="320" width="32" height="32"/>
+  <object name="girl" x="480" y="514" width="32" height="32"/>
  </objectgroup>
  <layer name="collision" width="20" height="20">
   <data encoding="base64">

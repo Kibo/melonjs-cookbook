@@ -46,7 +46,7 @@ var game = {
 	// Load the resources.
 	me.loader.preload(game.resources);
 	
-	me.debug.renderHitBox = true;
+	//me.debug.renderHitBox = true;
 
 	// Initialize melonJS and display a loading screen.
 	me.state.change(me.state.LOADING);					  
@@ -56,6 +56,8 @@ var game = {
 	"loaded" : function () {					
 		// add our player entity in the entity pool   		
    		me.entityPool.add("hero", game.HeroEntity);
+   		me.entityPool.add("girl", game.GirlEntity);
+   		
    		me.entityPool.add("doorOut", game.DoorOutEntity);
 		me.entityPool.add("doorIn", game.DoorInEntity);
 		
