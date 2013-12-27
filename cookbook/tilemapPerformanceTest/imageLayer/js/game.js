@@ -33,7 +33,9 @@ var game = {
 	me.loader.preload(game.resources);
 
 	// Initialize melonJS and display a loading screen.
-	me.state.change(me.state.LOADING);			
+	me.state.change(me.state.LOADING);	
+	
+	me.sys.preRender = true;		
 },
 
 	// Run on game resources loaded.

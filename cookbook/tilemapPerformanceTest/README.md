@@ -12,10 +12,12 @@ Count of layers: 2
 - bg - no transparency
 - fg - with transparency
 
-Layering	|	Fps	|	Profile 1 minute
-------------|-------|---------------------
-TileLayer	|	30	|	90% me.TMXLayer.draw()
-ImageLayer	|	60	|	5% me.ImageLayer.draw()
+Layering								|	Fps	|	Profile 1 minute
+----------------------------------------|-------|---------------------
+TileLayer (me.sys.preRender = false)	|	30	|	90% me.TMXLayer.draw()
+TileLayer (me.sys.preRender = true)		|	55	|	5.5% me.TMXLayer.draw()
+ImageLayer (me.sys.preRender = false)	|	59	|	5% me.ImageLayer.draw()
+ImageLayer (me.sys.preRender = true)	|	58	|	6% me.ImageLayer.draw()
 
 - OS GNU Linux
 - Firefox 26
