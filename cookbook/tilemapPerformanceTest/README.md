@@ -21,4 +21,4 @@ ImageLayer	|	60	|	5% me.ImageLayer.draw()
 - Firefox 26
 - no GPU
 
-For more detail see [demo](#)
+For more detail see [tileLayer demo](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/tilemapPerformanceTest/tileLayer), [imageLayer demo](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/tilemapPerformanceTest/imageLayer)

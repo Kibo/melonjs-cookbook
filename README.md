@@ -9,6 +9,7 @@ A sample code for [the MelonJS engine](http://melonjs.org/).
 5. [Drag and Drop](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/dragAndDrop)
 6. [Patrol movement](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/patrol)
 7. [Quiz extension](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/quiz)
+8. [TileLayer & ImageLayer performace test](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/tilemapPerformanceTest)
 
 
 
