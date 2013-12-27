@@ -5,7 +5,7 @@ me.TMXLayer & me.ImageLayer
 
 **Status**: finished
 
-TileMap size: 200x200 32x32<br>
+TileMap size: 200x200<br>
 Tile size: 32x32<br>
 Ortogonal<br>
 Count of layers: 2
