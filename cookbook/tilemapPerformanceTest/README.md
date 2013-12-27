@@ -5,9 +5,9 @@ me.TMXLayer & me.ImageLayer
 
 **Status**: finished
 
-TileMap size: 200x200 32x32
-Tile size: 32x32
-Ortogonal
+TileMap size: 200x200 32x32<br>
+Tile size: 32x32<br>
+Ortogonal<br>
 Count of layers: 2
 - bg - no transparency
 - fg - with transparency
