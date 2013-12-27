@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="200" height="200" tilewidth="32" tileheight="32">
+ <imagelayer name="bg" width="200" height="200">
+  <image source="tileset/bg.png"/>
+ </imagelayer>
+ <objectgroup name="entities" width="200" height="200">
+  <object name="hero" x="574" y="277" width="32" height="32"/>
+ </objectgroup>
+ <imagelayer name="fg" width="200" height="200">
+  <image source="tileset/fg.png"/>
+ </imagelayer>
+</map>
