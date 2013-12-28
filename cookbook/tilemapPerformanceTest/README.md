@@ -13,7 +13,7 @@ Count of layers: 2
 - fg - with transparency
 
 Screen Size	|	Layering								|	Fps	|	Profile 1 minute
-----------------------------------------|-------|---------------------
+------------|-------------------------------------------|-------|---------------------
 800x600		|	TileLayer (me.sys.preRender = false)	|	30	|	90% me.TMXLayer.draw()
 800x600		|	TileLayer (me.sys.preRender = true)		|	55	|	5.5% me.TMXLayer.draw()
 800x600		|	ImageLayer (me.sys.preRender = false)	|	59	|	5% me.ImageLayer.draw()
