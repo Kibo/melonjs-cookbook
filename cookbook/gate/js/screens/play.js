@@ -1,29 +1,25 @@
 game.PlayScreen = me.ScreenObject.extend({
 				
-	init:function(){		
-			
-		me.plugin.bag.create("right", 5 );			
-		me.event.subscribe( "game.bag.onAddItem", this._onAddItem);		
-		me.event.subscribe( "game.bag.onRemoveItem", this._onRemoveItem);
-					
-		// change the default sort property	
-		me.game.world.sortOn = "y";											
+	init:function(){
+		this.parent(true);
 	},
 		
 	/**	
 	 *  action to perform on state change
 	 */
 	onResetEvent: function() {				
-		me.levelDirector.loadLevel("part1");	
-													
-		me.game.onLevelLoaded = this.onLevelLoadedHandler.bind(this);	
-		game.data.lastLevelName = me.levelDirector.getCurrentLevelId();
+		me.game.world.sortOn = "y";	
 		
-		this.placeArtefacts();					
+		me.plugin.bag.create("right", 5 );			
+		me.event.subscribe( "game.bag.onAddItem", this._onAddItem);		
+		me.event.subscribe( "game.bag.onRemoveItem", this._onRemoveItem);
+																				
+		me.game.onLevelLoaded = this.onLevelLoadedHandler.bind(this);
+		me.levelDirector.loadLevel("part1");											
 	},
 	
 	/**
-	 * on level loader handler
+	 * on level loaded handler
 	 */
 	onLevelLoadedHandler: function(e){
 		this.mapSetting();	
@@ -61,6 +57,9 @@ game.PlayScreen = me.ScreenObject.extend({
 	 */
 	placeArtefacts:function(){
 		var artefacts = game.data.artefactsLocations[me.levelDirector.getCurrentLevelId()];
+		if( !artefacts ){
+			return;
+		}
 					
 		for( var idx = 0; idx < artefacts.length; idx++ ){
 			var artefact = me.entityPool.newInstanceOf( artefacts[idx].name, artefacts[idx].x, artefacts[idx].y, {name:artefacts[idx].name} );
