@@ -13,13 +13,7 @@ window.game = window.game || {};
  * myEntity.quiz = new game.Quiz( data );
  */
 game.Quiz = Object.extend( {
-	
-	/**
-	 * Context
-	 * @private
-	 */
-	_that:this,
-
+		
 	/**
 	 * All tasks
 	 * @private
@@ -49,6 +43,9 @@ game.Quiz = Object.extend( {
 	 * @param {?number} count - count of task
 	 */
 	init: function( tasks, count ) {
+		if(!tasks){
+			throw Error("game.Quiz#init tasks is: " + tasks);
+		}
 		this._tasks = tasks;
 		this._countOfTasks = count || this._tasks.length; 
 	},
