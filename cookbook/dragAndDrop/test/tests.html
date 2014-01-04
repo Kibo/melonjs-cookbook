@@ -233,6 +233,16 @@
 						equal( game.bag.hasItem("gear"), true );
 						equal( game.bag.hasItem("bell"), false );
 					} );
+					
+					test( "getItem", function( ) {
+						game.bag = null;
+						me.plugin.bag.create( );
+
+						game.bag.add( gear );						
+						equal( game.bag.items.length, 1 );
+						equal( game.bag.getItem("gear"), gear );
+						equal( game.bag.getItem("bell"), null );																	
+					} );
 
 					test( "getBounds", function( ) {
 						game.bag = null;

@@ -136,14 +136,23 @@ window.game = window.game || {};
 		 * @param {string} name
 		 * @return {boolean}
 		 */
-		hasItem: function( name ){			
+		hasItem: function( name ){						
+			return this.getItem( name ) ? true : false;
+		},
+		
+		/**
+		 * get item
+		 * @param {string} name
+		 * @return {me.CollectableEntity | null}
+		 */
+		getItem: function(name){
 			for(var idx = 0; idx < this.items.length; idx++){										
 				if( this.items[idx].name && this.items[idx].name === name ){
-					return true;
+					return this.items[idx];
 				}
-			}
+			}	
 			
-			return false;
+			return null;
 		},
 
 		/**
