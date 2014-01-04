@@ -32,12 +32,14 @@
 
 				function loaded( ) {
 					var gear = new me.CollectableEntity( 100, 120, {
+						name:"gear",
 						image: "gear",
 						spritewidth: 30,
 						spriteheight: 30
 					} );
 
 					var bell = new me.CollectableEntity( 200, 220, {
+						name:"bell",
 						image: "bell",
 						spritewidth: 30,
 						spriteheight: 30
@@ -155,7 +157,7 @@
 						game.bag.add( bell );
 						equal( game.bag.items.length, 2 );
 					} );
-					
+														
 					test( "_getWidth", function( ) {
 						var PADDING = 10;
 						game.bag = null;
@@ -210,6 +212,26 @@
 						ok( !bell.floating );
 						ok( bell.collidable );
 
+					} );
+					
+					test( "hasItem", function( ) {
+						game.bag = null;
+						me.plugin.bag.create( );
+
+						game.bag.add( gear );						
+						equal( game.bag.items.length, 1 );
+						equal( game.bag.hasItem("gear"), true );
+						equal( game.bag.hasItem("bell"), false );
+						
+						game.bag.add( bell );
+						equal( game.bag.items.length, 2 );
+						equal( game.bag.hasItem("gear"), true );
+						equal( game.bag.hasItem("bell"), true );
+						
+						game.bag.remove( bell );
+						equal( game.bag.items.length, 1 );
+						equal( game.bag.hasItem("gear"), true );
+						equal( game.bag.hasItem("bell"), false );
 					} );
 
 					test( "getBounds", function( ) {

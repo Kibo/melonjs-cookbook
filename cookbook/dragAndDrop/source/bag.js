@@ -130,6 +130,21 @@ window.game = window.game || {};
 			 */
 			me.event.publish(BagObject.ADD_ITEM_CHANNEL_NAME, [item]);					
 		},
+		
+		/**
+		 * has item
+		 * @param {string} name
+		 * @return {boolean}
+		 */
+		hasItem: function( name ){			
+			for(var idx = 0; idx < this.items.length; idx++){										
+				if( this.items[idx].name && this.items[idx].name === name ){
+					return true;
+				}
+			}
+			
+			return false;
+		},
 
 		/**
 		 * remove item from the bag
