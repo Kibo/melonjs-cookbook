@@ -106,12 +106,17 @@
 					practice._tasks[ practice._taskIndex ].isChecked = true;
 					equal( practice.isFinished(), true );
 					
-														
+					equal(practice._tasks.length, 3);
+					
+					practice = new game.Quiz( DATA, 5 );					
+					practice._taskIndex = 2;
+					practice._tasks[ practice._taskIndex ].isChecked = true;
+					equal( practice.isFinished(), true );		
+					
+					practice = new game.Quiz( [], 5 );													
+					equal( practice.isFinished(), false );																								
 				} );
-				
-			
-
-			
+								
 			};
 			// onload
 		</script>

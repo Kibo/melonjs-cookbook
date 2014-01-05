@@ -41,13 +41,18 @@ game.Quiz = Object.extend( {
 	/**
 	 * @param {Array<Object>} tasks
 	 * @param {?number} count - count of task
+	 * @param {?Function} onLeave - callback when quiz is left
 	 */
-	init: function( tasks, count ) {
+	init: function( tasks, count, onLeave ) {
 		if(!tasks){
 			throw Error("game.Quiz#init tasks is: " + tasks);
 		}
 		this._tasks = tasks;
-		this._countOfTasks = count || this._tasks.length; 
+		this._countOfTasks = (count && count <= this._tasks.length) ? count : this._tasks.length;
+		
+		if( typeof onLeave == "function" ) {
+			this.onLeaveCallback = onLeave;
+		}	 
 	},
 
 	/**
@@ -85,6 +90,9 @@ game.Quiz = Object.extend( {
 			delete this._tasks[ idx ].hasError;
 			delete this._tasks[ idx ].isChecked;
 		}
+		
+		this._taskIndex = 0;
+		this._errors = [];
 	},
 
 	/**
@@ -108,7 +116,7 @@ game.Quiz = Object.extend( {
 	 * @return {boolean}
 	 */
 	isFinished: function( ) {
-		return this._tasks.length > 0 && this._countOfTasks == ( this._taskIndex + 1 ) && this.isTaskChecked();
+		return this._countOfTasks === ( this._taskIndex + 1 ) && this.isTaskChecked();
 	},
 
 	/*
@@ -262,7 +270,8 @@ game.Quiz = Object.extend( {
 		this._tasks[ this._taskIndex ].isChecked = true;
 		
 		if( !this._taskObj.evaluate( this ) ){
-			this._tasks[ this._taskIndex ].hasError = false;			
+			this._tasks[ this._taskIndex ].hasError = false;	
+			this._errors.push( this._tasks[ this._taskIndex ] );		
 			this.drawAnswers();
 		}
 				
@@ -278,7 +287,13 @@ game.Quiz = Object.extend( {
 	 */
 	_onLeave:function(){
 		me.state.resume();		
-		this.hide();		
+		this.hide();	
+		
+		/**
+		 * user defined callback
+		 * @see constructor
+		 */
+		this.onLeaveCallback && this.onLeaveCallback(); 	
 	},
 
 	/**
