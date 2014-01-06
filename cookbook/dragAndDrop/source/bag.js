@@ -37,10 +37,12 @@ window.game = window.game || {};
 		 * @public
 		 * @param {?string} location - top | right | bottom | left
 		 * @param {?number} padding - item padding in px
+		 * @param {?Function} afterAdding - call after adding item to bag
+		 * @param {?Function} afterRemoving - call after removing item from bag
 		 */
-		create: function( location, padding ) {
+		create: function( location, padding, afterAdding, afterRemoving ) {
 			if( game.bag == null ) {
-				game.bag = new BagObject( location, padding );
+				game.bag = new BagObject( location, padding, afterAdding, afterRemoving );
 			}
 		},
 				
@@ -88,13 +90,23 @@ window.game = window.game || {};
 		 * @ignore
 		 * @param {?string} location - top | right | bottom | left
 		 * @param {?number} padding - item padding in px
+		 * @param {?Function} afterAdding - call after adding item to bag
+		 * @param {?Function} afterRemoving - call after removing item from bag
 		 */
-		init: function( location, padding ) {
+		init: function( location, padding, afterAdding, afterRemoving ) {
 			this.location = this._LOCATIONS[ location ] || this._LOCATIONS[ "top" ];
 			this.padding = padding || 0;
 			this.items = [ ];
 			
 			me.event.subscribe(me.event.LEVEL_LOADED, this._reset);
+			
+			if( typeof afterAdding == "function" ) {
+				this.afterAdding = afterAdding;
+			}
+			
+			if( typeof afterRemoving == "function" ) {
+				this.afterRemoving = afterRemoving;
+			}
 			
 			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#init]");};
 		},
@@ -122,13 +134,9 @@ window.game = window.game || {};
 
 			me.input.registerPointerEvent( 'mousedown', item, this._onMouseDown.bind( item ), true );
 			
-			/**
-			 * onAddItem event				
-			 * @event game.bag#onAddItem
-			 * @type {Array}
-			 * @property {Object} item
-			 */
-			me.event.publish(BagObject.ADD_ITEM_CHANNEL_NAME, [item]);					
+			// callback
+			// @see constructor		
+			this.afterAdding && this.afterAdding( item );					
 		},
 		
 		/**
@@ -172,14 +180,10 @@ window.game = window.game || {};
 
 				me.input.releasePointerEvent( 'mousedown', item );
 				this._arrange();
-								
-				/**
-				 * onRemoveItem event				
-				 * @event game.bag#onRemoveItem
-				 * @type {Array}
-				 * @property {Object} item
-				 */
-				me.event.publish(BagObject.REMOVE_ITEM_CHANNEL_NAME, [item]);							
+											
+				// callback
+				// @see constructor		
+				this.afterRemoving && this.afterRemoving( item );								
 			}								
 		},
 				
@@ -490,23 +494,7 @@ window.game = window.game || {};
 			}									
 		},
 	} );
-	
-	/**
-     * Channel Constant for when a item is added    
-     * @constant
-     * @name ADD_ITEM_CHANNEL_NAME
-     * @type {string}
-     */
-	BagObject.ADD_ITEM_CHANNEL_NAME = "game.bag.onAddItem";
-	
-	/**
-     * Channel Constant for when a item is remove   
-     * @constant
-     * @name REMOVE_ITEM_CHANNEL_NAME
-     * @type {string}
-     */
-	BagObject.REMOVE_ITEM_CHANNEL_NAME = "game.bag.onRemoveItem";
-	
+		
 	/**
      * Debug to window.console
      * @constant
