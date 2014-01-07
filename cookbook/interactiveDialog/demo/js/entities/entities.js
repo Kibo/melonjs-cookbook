@@ -38,8 +38,32 @@ game.BaseEntity = me.ObjectEntity.extend({
     	}else{
     		this.vel.x = 0;
     		this.vel.y = 0;
-    	}   	
+    	}    	    	    	    	
     }, 
+    
+     /**
+    * set a random target position   
+    */
+    _setRandomTargetPosition:function(){
+    	
+    	  if(!this._targetIsSet){
+        	this._targetIsSet = true;
+        	        
+        	var min = 500;
+        	var max = 3000;
+        	var waitFor = Math.random() * (max - min) + min;
+        	        	
+        	// wait from min to max before next step
+        	window.setTimeout(function(){        		
+        		this._target = {};        	   	  	    	   	  
+    			this._target.x = Number(0).random(this.minX, this.maxX); 	
+    			this._target.y = Number(0).random(this.minY, this.maxY);
+    			this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);      
+    			this.renderable.setCurrentAnimation( this.direction );        											
+				delete this._targetIsSet;		        		
+        	}.bind(this), waitFor);        	        		
+        }    	    	    	    	 
+    },
     
      /**
 	 * default on collision handler	
@@ -51,7 +75,11 @@ game.BaseEntity = me.ObjectEntity.extend({
     },  
     
     onDialogReset:function(){
-    	delete this.isTalking;    	
+    	// wait for 2 sec - let the hero go away
+    	var waitFor = 2000;
+    	window.setTimeout(function(){
+    		delete this.isTalking;	
+    	}.bind(this), waitFor);    	    	
     },   
     
     onDialogShow:function( event ){    	
@@ -196,28 +224,23 @@ game.GirlEntity = game.BaseEntity.extend({
         this.minY = y;
         this.maxX = x + settings.width - settings.spritewidth;
         this.maxY = y + settings.height - settings.spriteheight;
-                                                                                                                                               
-		this.walkInterval = setInterval(function(){
-			if(!this.isTalking){
-				this._setTargetPosition( 
-        			Number(0).random(this.minX, this.maxX), 
-        			Number(0).random(this.minY, this.maxY));
-        	}        		
-		}.bind(this), 5000);	
-		
+                                                                                                                                               				
 		// create dialog
 		this.dialog = new game.Dialog( DIALOGUES[ this.name ], this.onDialogReset.bind(this), this.onDialogShow.bind(this));					  							    	        	        
 	},
 	
-    update: function() {    	        
-        if (!this.inViewport){
-        	return false;
+    update: function() {
+    	    	    	    	    	                        
+        if(!this._target){
+       		this._setRandomTargetPosition();
         }
-            
-        this._calculateStep();
+                       
+		if(!this.isTalking){   
+        	this._calculateStep();
+        }
     	           
         this.updateMovement();
-                  	                    
+                                  	                  
         // update animation if necessary
         if (this.vel.x!=0 || this.vel.y!=0) {
             // update object animation
@@ -226,26 +249,5 @@ game.GirlEntity = game.BaseEntity.extend({
         }
         
         return false;
-    },
-                       
-    /**
-    * set a target position
-    * @private
- 	* @param {number} x - pos x
- 	* @param {number} y - pos y
-    */
-    _setTargetPosition:function(x, y){
-    	this._target = {};        	   	  	    	   	  
-    	this._target.x = x;    	
-    	this._target.y = y;    
-    	this._setDirection(this._target.x - this.pos.x, this._target.y - this.pos.y);      
-    	this.renderable.setCurrentAnimation( this.direction );    
-    },	
-    
-    /**
-	 * on destroy handler
-	 */
-    onDestroyEvent : function() {		
-		clearInterval( this.walkInterval );	
-    }, 
+    }                          	  
 });
