@@ -10,9 +10,7 @@ game.PlayScreen = me.ScreenObject.extend({
 	onResetEvent: function() {				
 		me.game.world.sortOn = "y";	
 		
-		me.plugin.bag.create("right", 5 );			
-		me.event.subscribe( "game.bag.onAddItem", this._onAddItem);		
-		me.event.subscribe( "game.bag.onRemoveItem", this._onRemoveItem);
+		me.plugin.bag.create("right", 5, this._onAddItem, this._onRemoveItem );					
 																				
 		me.game.onLevelLoaded = this.onLevelLoadedHandler.bind(this);
 		me.levelDirector.loadLevel("part1");											
@@ -47,10 +45,7 @@ game.PlayScreen = me.ScreenObject.extend({
 	/**	
 	 *  action to perform when leaving this screen (state change)
 	 */
-	onDestroyEvent: function() {
-		me.event.unsubscribe( "game.bag.onAddItem", this._onAddItem);		
-		me.event.unsubscribe( "game.bag.onRemoveItem", this._onRemoveItem);			
-	},
+	onDestroyEvent: function() {},
 	
 	/**
 	 * Place artefacts to level
