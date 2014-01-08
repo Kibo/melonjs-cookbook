@@ -21,7 +21,8 @@ game.PlayScreen = me.ScreenObject.extend({
 	 */
 	onLevelLoadedHandler: function(e){
 		this.mapSetting();	
-		this.placeArtefacts();		              		       
+		this.placeArtefacts();	
+		game.bag.reset();	              		       
 	},
 	
 	/**

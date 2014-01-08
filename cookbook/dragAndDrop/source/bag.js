@@ -97,9 +97,7 @@ window.game = window.game || {};
 			this.location = this._LOCATIONS[ location ] || this._LOCATIONS[ "top" ];
 			this.padding = padding || 0;
 			this.items = [ ];
-			
-			me.event.subscribe(me.event.LEVEL_LOADED, this._reset);
-			
+								
 			if( typeof afterAdding == "function" ) {
 				this.afterAdding = afterAdding;
 			}
@@ -195,9 +193,7 @@ window.game = window.game || {};
 			for( var idx = 0; idx < this.items.length; idx++ ) {
 				this.remove( this.items.idx );					
 			}
-								
-			me.event.unsubscribe( me.event.LEVEL_LOADED, this._reset );
-			
+													
 			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#destroy]");};											
 		},
 
@@ -411,13 +407,13 @@ window.game = window.game || {};
 		 * recreate events, when player goes to the next level
 		 * @private
 		 */
-		_reset: function(){										
+		reset: function(){										
 			for( var idx = 0; idx < game.bag.items.length; idx++ ) {								
 				me.input.releasePointerEvent( 'mousedown', game.bag.items[idx]);				
 				me.input.registerPointerEvent( 'mousedown', game.bag.items[idx], game.bag._onMouseDown.bind( game.bag.items[idx] ), true );
 			}
 						
-			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#_reset] recreate events of item in bag.");};
+			if(BagObject._DEBUG && window.console){window.console.log("[game.bag#reset] recreate events of item in bag.");};
 		},
 
 		/**
