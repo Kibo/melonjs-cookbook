@@ -37,6 +37,11 @@ game.Quiz = Object.extend( {
 	 * @private
 	 */
 	_taskIndex: 0,
+	
+	/**
+	 * Shows answer after evaluating
+	 */
+	 showAnswer:true,
 
 	/**
 	 * @param {Array<Object>} tasks
@@ -272,7 +277,10 @@ game.Quiz = Object.extend( {
 		if( !this._taskObj.evaluate( this ) ){
 			this._tasks[ this._taskIndex ].hasError = false;	
 			this._errors.push( this._tasks[ this._taskIndex ] );		
-			this.drawAnswers();
+			
+			if(this.showAnswer){
+				this.drawAnswers();
+			}
 		}
 				
 		this._toggleButtons();
