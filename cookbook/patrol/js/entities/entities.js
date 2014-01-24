@@ -71,6 +71,11 @@ game.PatrolEntity = me.ObjectEntity.extend({
 			
 				if( idx == ( this._patrol_path.length ) ) {
 					delete this._target;
+										
+					/* callback */
+					if(typeof this.afterPatrolFinished === 'function'){
+						this.afterPatrolFinished();
+					}
 					
 					if( this._patrol_isReverse ){
 						this._patrol_path.reverse( );						
@@ -167,6 +172,11 @@ game.GirlEntity = game.PatrolEntity.extend( {
 		this.patrol_addPoint( new me.Vector2d(200, 100));
 		this.patrol_addPoint( new me.Vector2d(200, 200));
 		this.patrol_addPoint( new me.Vector2d(100, 200));		
+		
+		// callback
+		this.afterPatrolFinished = function(){
+			console.log("patrol finished");
+		};
 		
 		this.patrol_walk();
 	},
