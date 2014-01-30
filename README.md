@@ -12,6 +12,5 @@ A sample code for [the MelonJS engine](http://melonjs.org/).
 8. [TileLayer & ImageLayer performace test](https://github.com/Kibo/melonjs-cookbook/tree/master/cookbook/tilemapPerformanceTest)
 
 
-
-
-
+### External  resources
+ - [Door] (https://github.com/blipjoy/sprung_fever/blob/gh-pages/public/js/entities/door.js)
