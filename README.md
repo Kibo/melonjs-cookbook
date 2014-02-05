@@ -14,3 +14,4 @@ A sample code for [the MelonJS engine](http://melonjs.org/).
 
 ### External  resources
  - [Door] (https://github.com/blipjoy/sprung_fever/blob/gh-pages/public/js/entities/door.js)
+ - [Menu screen with buttons] (https://gist.github.com/parasyte/7608843)
