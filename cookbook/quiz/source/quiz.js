@@ -154,10 +154,10 @@ game.Quiz = Object.extend( {
 		this.getDOMContainer().innerHTML = "";
 		
 		// create a task object					
-		this._taskObj = new window.game[ this._tasks[ this._taskIndex ].type ];
-		if( !this._taskObj ){
+		if( !window.game[ this._tasks[ this._taskIndex ].type ] ){
 			throw new Error("Unknown task type: " + this._tasks[ this._taskIndex ].type );	
-		}
+		}			
+		this._taskObj = new window.game[ this._tasks[ this._taskIndex ].type ];		
 		this._taskObj.draw( this );
 				
 		var buttonWrapper = document.createElement("div");
@@ -411,10 +411,10 @@ game.Question = Object.extend({
 	 */
 	evaluate: function( quiz ) {			
 		var answerElement = document.getElementById( game.Question.DOM_ANSWER_INPUT_ID );
-		var answerValue = answerElement.value.trim();
+		var answerValue = answerElement.value.trim().toLowerCase();
 
 		for( var idx = 0; idx < quiz._tasks[ quiz._taskIndex ].answers.length; idx++ ){
-			if( quiz._tasks[ quiz._taskIndex ].answers[idx] == answerValue ){
+			if( quiz._tasks[ quiz._taskIndex ].answers[idx].toLowerCase() == answerValue ){
 				answerElement.classList.add('isCorrect');
 				return true;
 			}
@@ -432,6 +432,105 @@ game.Question = Object.extend({
  * @type {string}
  */
 game.Question.DOM_ANSWER_INPUT_ID = "quiz-answer";
+
+/* ###################################################### */
+/**
+ * RefillQuestion
+ */
+game.RefillQuestion = Object.extend({
+	
+	/**
+	 * Draw a task	
+	 * @param {game.Quiz} quiz	
+	 */
+	draw: function( quiz ) {						
+		var wrapper = document.createElement("div");
+		wrapper.setAttribute("class", game.Quiz.DOM_CONTENT_CLASS + " quiz-question");
+
+		// Instruction
+		wrapper.innerHTML = quiz._tasks[ quiz._taskIndex ].text;
+				
+		// Input			
+		var textField = document.createElement("input");
+		textField.setAttribute("id", game.Question.DOM_ANSWER_INPUT_ID );
+		textField.setAttribute("type", "text");		
+		wrapper.appendChild( textField );
+						
+		if(typeof wrapper.querySelectorAll === 'function'){
+			var elementList = wrapper.querySelectorAll("label span");		
+			for(var i = 0, max = elementList.length; i < max; ++i ){							
+				elementList[i].addEventListener( me.device.touch ? "touchstart" : "mousedown", function(e) {
+					var text = this.textContent || this.innerText;
+					document.getElementById( game.Question.DOM_ANSWER_INPUT_ID ).value += text;
+				}, false);											
+			} 
+		}
+												
+		quiz.getDOMContainer().appendChild( wrapper );
+	},
+
+	/**
+	 * Evaluate a question
+	 * @param {game.Quiz} quiz
+	 * @return {boolean} isCorrect 
+	 */
+	evaluate: function( quiz ) {			
+		var answerElement = document.getElementById( game.Question.DOM_ANSWER_INPUT_ID );
+		var value = answerElement.value.trim(); 	
+						
+		answerElement.value = this._correctText(quiz._tasks[ quiz._taskIndex ], value); 	
+				
+		var answerValue = answerElement.value.trim().toLowerCase();
+							
+		for( var idx = 0, max = quiz._tasks[ quiz._taskIndex ].answers.length; idx < max; idx++ ){
+			if( quiz._tasks[ quiz._taskIndex ].answers[idx].toLowerCase() == answerValue ){
+				answerElement.classList.add('isCorrect');
+				return true;
+			}
+		}
+
+		answerElement.classList.add('isMistake');									
+		return false;
+	},	
+	
+	/**
+	 * Correct text
+	 * @private
+	 * @param {Object} task
+	 * @param {String}
+	 * @return {String}
+	 */
+	_correctText:function( task, text ){
+		
+		// Capitalize the first letter of string
+		var correctedText = text.charAt(0).toUpperCase() + text.slice(1);
+		
+		// Compulsory end of text
+		if(task.endWith && !this.endWith(correctedText, task.endWith)){
+			correctedText += task.endWith; 
+		}
+		
+		return correctedText;		
+	},
+	
+	/**
+	 * Determine if text end with suffix
+	 * @param {String} text
+	 * @param {String} suffix
+	 * @return boolean
+	 */
+	endWith:function(text, suffix){
+		return text.indexOf(suffix, text.length - suffix.length) !== -1;	
+	}
+});
+
+/**
+ * id for DOM input for answer 
+ * @constant
+ * @name DOM_ANSWER_INPUT_ID
+ * @type {string}
+ */
+game.RefillQuestion.DOM_ANSWER_INPUT_ID = "quiz-answer";
 
 /* ###################################################### */
 
